@@ -75,7 +75,7 @@ class MainPage extends StatelessWidget {
                       minWidth: double.infinity,
                       height: 60,
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SignupPage()));
                       },
                       color: Colors.yellow,
                       elevation: 0,
