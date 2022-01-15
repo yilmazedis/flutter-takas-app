@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:takas_app/Utils/charBubble.dart';
+import 'package:takas_app/Utils/sendMessage.dart';
 import 'package:takas_app/models/message.dart';
 import 'package:takas_app/models/user.dart';
 
@@ -20,127 +22,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   List<Message> messages = [];
 
-  Widget _chatBubble(Message message, bool isMe) {
-    if (isMe) {
-      return Column(
-        children: <Widget>[
-          Container(
-            alignment: Alignment.topRight,
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.80,
-              ),
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                  ),
-                ],
-              ),
-              child: Text(
-                message.text,
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    } else {
-      return Column(
-        children: <Widget>[
-          Container(
-            alignment: Alignment.topLeft,
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.80,
-              ),
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                  ),
-                ],
-              ),
-              child: Text(
-                message.text,
-                style: const TextStyle(
-                  color: Colors.black54,
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-  }
-
-  Widget _sendMessageArea() {
-
-    final messageText = TextEditingController();
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      height: 70,
-      color: Colors.white,
-      child: Row(
-        children: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.photo),
-            iconSize: 25,
-            color: Theme.of(context).primaryColor,
-            onPressed: () {
-
-            },
-          ),
-           Expanded(
-            child: TextField(
-              controller: messageText,
-              decoration: const InputDecoration.collapsed(
-                hintText: 'Send a message..',
-              ),
-              textCapitalization: TextCapitalization.sentences,
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.send),
-            iconSize: 25,
-            color: Theme.of(context).primaryColor,
-            onPressed: () {
-              Message message = Message(
-                fromUser: Auth().currentUser(),
-                toUser: widget.userData.id,
-                time: DateTime.now(),
-                text: messageText.text,
-              );
-
-              //messages.add(message);
-
-              Auth().sendMessage(message.getDataMap());
-
-              messageText.text = "";
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    String prevUserId = "";
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
       appBar: AppBar(
@@ -190,7 +73,6 @@ class _ChatScreenState extends State<ChatScreen> {
               stream: FirebaseFirestore.instance.
               collection('messages').
               orderBy('time').
-             // where("toUser", isEqualTo: widget.userData.id).
               snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
@@ -202,7 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Text("Loading");
                 }
-
+                // TODO: move list to bottom when new message is sent
                 return ListView(
                   padding: const EdgeInsets.all(20),
                   children: snapshot.data!.docs.map((DocumentSnapshot document) {
@@ -225,7 +107,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       );
 
                       final bool isMe = data["fromUser"] == Auth().currentUser();
-                      return _chatBubble(message, isMe);
+                      return chatBubble(context, message, isMe);
                     } else {
                       return Container ();
                     }
@@ -234,7 +116,7 @@ class _ChatScreenState extends State<ChatScreen> {
               },
             ),
           ),
-          _sendMessageArea(),
+          sendMessageArea(context, widget.userData.id),
         ],
       ),
     );

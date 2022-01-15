@@ -1,7 +1,4 @@
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:takas_app/Utils/addAvatar.dart';
@@ -9,19 +6,18 @@ import 'package:takas_app/auth.dart';
 import 'package:takas_app/models/message.dart';
 import 'package:takas_app/models/user.dart';
 import 'package:takas_app/screens/chat.dart';
+import 'package:takas_app/screens/home.dart';
 
 // command to run flutter web:   flutter run -d chrome --web-renderer html
 // command to build flutter web for release: flutter build web --web-renderer html --release
 
-
-
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class MyItems extends StatefulWidget {
+  const MyItems({Key? key}) : super(key: key);
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _MyItemsState createState() => _MyItemsState();
 }
 
-class _HomeScreenState extends  State<HomeScreen> with WidgetsBindingObserver {
+class _MyItemsState extends  State<MyItems> with WidgetsBindingObserver {
 
   List<Message> users = [];
 
@@ -59,7 +55,7 @@ class _HomeScreenState extends  State<HomeScreen> with WidgetsBindingObserver {
         appBar: AppBar(
           elevation: 8,
           title: const Text(
-            'Inbox',
+            'My Items',
             style: TextStyle(
               color: Colors.white,
             ),
@@ -87,15 +83,18 @@ class _HomeScreenState extends  State<HomeScreen> with WidgetsBindingObserver {
                 child: Text("Takas App"),
               ),
               ListTile(
-                title: const Text('My Items'),
+                title: const Text('Chat Menu'),
                 onTap: () {
-                  Navigator.of(context).pushNamedAndRemoveUntil('/MyItems', (route) => false);
+                  // Update the state of the app.
+                  // ...
+                  Navigator.of(context).pushNamedAndRemoveUntil('/HomeScreen', (route) => false);
                 },
               ),
               ListTile(
                 title: const Text("Log Out"),
                 onTap: () {
                   Auth().signOut();
+                  // TODO: pushNamedAndRemoveUntil
                   Navigator.pushReplacementNamed(context, '/');
                   //Navigator.pop(context);
                 },
@@ -103,67 +102,7 @@ class _HomeScreenState extends  State<HomeScreen> with WidgetsBindingObserver {
             ],
           ),
         ),
-        body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('users').where(
-            "id", isNotEqualTo: Auth().currentUser()
-          ).snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-
-            if (snapshot.hasError) {
-              return Text('Something went wrong');
-            }
-
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text("Loading");
-            }
-
-            return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-
-                UserData userData = UserData(
-                    id: data["id"],
-                    name: data["name"],
-                    email: data["email"],
-                    imageUrl: data["imageUrl"],
-                    isOnline: data["isOnline"]);
-
-                    print(data["isOnline"].runtimeType);
-
-                    print(data["id"]);
-
-                   var imagePath = data["email"] + "/profile/" + data["imageUrl"];
-
-                   print("imagePath $imagePath");
-
-                return GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ChatScreen(userData: userData,),
-                    ),
-                  ),
-                  child: ListTile(
-                    title: Row(
-                      children: [
-
-                        addAvatar(imagePath: imagePath),
-
-                        const SizedBox(width: 50),
-                        Text(data['name']),
-                        const SizedBox(width: 50),
-                        Text(data['isOnline'] == true ? "Online" : "Offline"),
-                        const SizedBox(width: 50),
-                        Text(data['email'])
-                      ],
-                    ),
-                    //subtitle: Text(data['email']),
-                  ),
-                );
-              }).toList(),
-            );
-          },
-        ),
+        body: Container(),
       ),
     );
   }
