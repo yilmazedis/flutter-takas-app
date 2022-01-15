@@ -20,7 +20,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   List<Message> messages = [];
 
-  Widget _chatBubble(Message message, bool isMe, bool isSameUser) {
+  Widget _chatBubble(Message message, bool isMe) {
     if (isMe) {
       return Column(
         children: <Widget>[
@@ -51,41 +51,6 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
-          !isSameUser
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Text(
-                      message.time.toString(),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.black45,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                          ),
-                        ],
-                      ),
-                      child: CircleAvatar(
-                        radius: 15,
-                        //backgroundImage: AssetImage(message.sender.imageUrl),
-                      ),
-                    ),
-                  ],
-                )
-              : Container(
-                  child: null,
-                ),
         ],
       );
     } else {
@@ -118,40 +83,6 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
-          !isSameUser
-              ? Row(
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                          ),
-                        ],
-                      ),
-                      child: const CircleAvatar(
-                        radius: 15,
-                        //backgroundImage: AssetImage(message.sender.imageUrl),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      message.time.toString(),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.black45,
-                      ),
-                    ),
-                  ],
-                )
-              : Container(
-                  child: null,
-                ),
         ],
       );
     }
@@ -294,10 +225,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       );
 
                       final bool isMe = data["fromUser"] == Auth().currentUser();
-                      final bool isSameUser = prevUserId == widget.userData.id;
-                      prevUserId = widget.userData.id;
-
-                      return _chatBubble(message, isMe, isSameUser);
+                      return _chatBubble(message, isMe);
                     } else {
                       return Container ();
                     }

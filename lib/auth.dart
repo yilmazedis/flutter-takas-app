@@ -1,12 +1,15 @@
+import 'dart:convert';
+import 'dart:io' as i;
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'models/user.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class Auth {
   final FirebaseAuth auth = FirebaseAuth.instance;
-  final FirebaseFirestore store = FirebaseFirestore.instance;
-
   static final Auth _singleton = Auth._internal();
 
   factory Auth() {
@@ -19,8 +22,93 @@ class Auth {
 
   List<UserData> users = [];
 
-  clearAll() {
-    users.clear();
+  Future<Uint8List?> downloadData(String name) async {
+
+    FirebaseStorage storage =
+    FirebaseStorage.instanceFor(
+        bucket: 'gs://takas-e8b2b.appspot.com/');
+
+    final ref = storage.refFromURL('gs://takas-e8b2b.appspot.com/' + name);
+
+    try {
+
+      // Get raw data.
+      var downloadedData = await ref.getData();
+      // prints -> Hello World!
+      print("downloaded data" + utf8.decode(downloadedData!));
+
+      return downloadedData;
+
+    } catch (e) {
+      print("error while downloading  $e");
+      return null;
+    }
+  }
+
+  Future<void> uploadFile(String filePath) async {
+    i.File file = i.File(filePath);
+
+    try {
+      FirebaseStorage storage = FirebaseStorage.instanceFor(
+          bucket: 'gs://takas-e8b2b.appspot.com/');
+
+      final ref = storage.refFromURL('gs://takas-e8b2b.appspot.com/');
+
+      await ref.putFile(file);
+    }  catch (e) {
+      // e.g, e.code == 'canceled'
+      print("error while uploading file");
+    }
+  }
+
+  Future<void> uploadData(Uint8List data, String name) async {
+
+    FirebaseStorage storage =
+    FirebaseStorage.instanceFor(
+        bucket: 'gs://takas-e8b2b.appspot.com/');
+
+    final ref = storage.refFromURL('gs://takas-e8b2b.appspot.com/' + name);
+
+    try {
+      // Upload raw data.
+      // await ref.putData(data);
+      // // Get raw data.
+      // Uint8List? downloadedData = await ref.getData();
+      // // prints -> Hello World!
+      // print(utf8.decode(downloadedData!));
+
+
+      ref.putData(data, SettableMetadata(contentType: 'image/png'));
+    } catch (e) {
+      // e.g, e.code == 'canceled'
+      print("error while uploading data");
+    }
+  }
+
+  Future<void> uploadString() async {
+
+    FirebaseStorage storage =
+    FirebaseStorage.instanceFor(
+        bucket: 'gs://takas-e8b2b.appspot.com/');
+
+    final ref = storage.refFromURL('gs://takas-e8b2b.appspot.com/');
+
+    final task = ref.child('web_3_text').putString("hello again!");
+
+    try {
+      // Storage tasks function as a Delegating Future so we can await them.
+      TaskSnapshot snapshot = await task;
+      print('Uploaded ${snapshot.bytesTransferred} bytes.');
+    }  catch (e) {
+      // The final snapshot is also available on the task via `.snapshot`,
+      // this can include 2 additional states, `TaskState.error` & `TaskState.canceled`
+      print(task.snapshot);
+
+      if (e == 'permission-denied') {
+        print('User does not have permission to upload to this reference.');
+      }
+      // ...
+    }
   }
 
   Future<void> addUser(Map<String, dynamic> userDataMap) {
@@ -95,6 +183,9 @@ class Auth {
       print('sign in is successful');
       updateUserStatus(true);
 
+      //uploadString();
+      //print(downloadURL());
+
       return result.user;
 
     } on FirebaseAuthException catch (e) {
@@ -124,12 +215,18 @@ class Auth {
           }
       );
 
+
+
       return result.user;
     } on FirebaseAuthException catch (e) {
       print("Could not sign up");
     }
 
     return null;
+  }
+
+  clearAll() {
+    users.clear();
   }
 
   Future<bool> signOut() async {

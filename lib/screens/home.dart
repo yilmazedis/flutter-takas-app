@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,62 @@ import 'package:takas_app/auth.dart';
 import 'package:takas_app/models/message.dart';
 import 'package:takas_app/models/user.dart';
 import 'package:takas_app/screens/chat.dart';
+
+class addAvatar extends StatefulWidget {
+
+  @override
+  _addAvatarState createState() => _addAvatarState();
+}
+
+class _addAvatarState extends State<addAvatar> {
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Uint8List?>(
+      future: Auth().downloadData("82GRk7ykxUQOUAQy8W8sn9L6FCr2"), // function where you call your api
+      builder: (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {  // AsyncSnapshot<Your object type>
+        if( snapshot.connectionState == ConnectionState.waiting){
+          return  const Center(child: Text('Please wait its loading...'));
+        }else{
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+
+
+
+            return CircleAvatar(
+              radius: 25,
+              backgroundColor: const Color(0xffFDCF09),
+              child: snapshot.data != null
+                  ? ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child:
+                  Image.memory(
+                    snapshot.data!,
+                    fit: BoxFit.fitHeight,
+                      width: 100,
+                      height: 100
+                  )
+              )
+                  : Container(
+                decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(20)),
+                width: 100,
+                height: 100,
+                child: Icon(
+                  Icons.account_circle,
+                  color: Colors.grey[800],
+                ),
+              ),
+            );
+            //return Center(child: Text('${snapshot.data}'));
+          }  // snapshot.data  :- get your object which is pass from your downloadData() function
+        }
+      },
+    );
+  }
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -117,8 +175,12 @@ class _HomeScreenState extends  State<HomeScreen> with WidgetsBindingObserver {
                     name: data["name"],
                     email: data["email"],
                     imageUrl: data["imageUrl"],
-                    isOnline: data["isOnline"] == "true");
+                    isOnline: data["isOnline"]);
 
+                    print(data["isOnline"].runtimeType);
+
+                    print(data["id"]);
+                    
                 return GestureDetector(
                   onTap: () => Navigator.push(
                     context,
@@ -127,8 +189,18 @@ class _HomeScreenState extends  State<HomeScreen> with WidgetsBindingObserver {
                     ),
                   ),
                   child: ListTile(
-                    title: Text(data['name']),
-                    subtitle: Text(data['email']),
+                    title: Row(
+                      children: [
+                        addAvatar(),
+                        const SizedBox(width: 50),
+                        Text(data['name']),
+                        const SizedBox(width: 50),
+                        Text(data['isOnline'] == true ? "Online" : "Offline"),
+                        const SizedBox(width: 50),
+                        Text(data['email'])
+                      ],
+                    ),
+                    //subtitle: Text(data['email']),
                   ),
                 );
               }).toList(),

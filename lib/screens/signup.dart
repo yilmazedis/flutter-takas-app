@@ -1,5 +1,4 @@
 import 'dart:io' as i;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,21 +20,25 @@ class _SignupPageState extends State<SignupPage> {
   final password = TextEditingController();
   final confirmPassword = TextEditingController();
 
-  i.File? _image;
   var webImage;
+  var imageName;
 
   _imgFromGallery() async {
 
     var image = await ImagePicker().pickImage(
         source: ImageSource.gallery);
 
+    imageName = image?.name;
     var f = await image?.readAsBytes();
 
     setState(() {
-      kIsWeb ?
-      webImage = f
-      :
-      _image = i.File((image?.path)!);
+     /* if (kIsWeb) {
+        webImage = f;
+      } else {
+        _image = i.File((image?.path)!);
+      }*/
+
+      webImage = f;
     });
   }
 
@@ -47,18 +50,12 @@ class _SignupPageState extends State<SignupPage> {
       child: CircleAvatar(
         radius: 55,
         backgroundColor: const Color(0xffFDCF09),
-        child: ((_image != null)
-            ||
-            (webImage != null))
+        child:
+            (webImage != null)
             ? ClipRRect(
           borderRadius: BorderRadius.circular(50),
           child:
-            !kIsWeb ?
-                Image.file(
-                  _image!,
-                  fit: BoxFit.fitHeight,
-                )
-             : Image.memory(
+          Image.memory(
                 webImage,
                 fit: BoxFit.fitHeight,
               )
@@ -146,11 +143,15 @@ class _SignupPageState extends State<SignupPage> {
                   minWidth: double.infinity,
                   height: 60,
                   onPressed: () {
-                    Auth()
-                        .signUp(name.text, email.text, confirmPassword.text)
-                        .then((user) {
-                      authStatus(context, user);
-                    });
+
+                    Auth().uploadData(webImage, imageName);
+                    // Auth()
+                    //     .signUp(name.text, email.text, confirmPassword.text)
+                    //     .then((user) {
+                    //
+                    //   authStatus(context, user);
+                    //
+                    // });
                   },
                   color: Colors.greenAccent,
                   elevation: 0,

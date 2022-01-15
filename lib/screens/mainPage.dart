@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:takas_app/screens/signin.dart';
 import 'package:takas_app/screens/signup.dart';
 
+import '../auth.dart';
+
 class MainPage extends StatelessWidget {
   const MainPage({Key? key}) : super(key: key);
 
