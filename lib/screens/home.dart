@@ -9,7 +9,13 @@ import 'package:takas_app/models/message.dart';
 import 'package:takas_app/models/user.dart';
 import 'package:takas_app/screens/chat.dart';
 
+// command to run flutter web:   flutter run -d chrome --web-renderer html
+// command to build flutter web for release: flutter build web --web-renderer html --release
+
 class addAvatar extends StatefulWidget {
+  const addAvatar({Key? key, this.imagePath}) : super(key: key);
+
+  final imagePath;
 
   @override
   _addAvatarState createState() => _addAvatarState();
@@ -19,9 +25,9 @@ class _addAvatarState extends State<addAvatar> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Uint8List?>(
-      future: Auth().downloadData("82GRk7ykxUQOUAQy8W8sn9L6FCr2"), // function where you call your api
-      builder: (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {  // AsyncSnapshot<Your object type>
+    return FutureBuilder<String>(
+      future: Auth().downloadUrl(widget.imagePath), // function where you call your api
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  // AsyncSnapshot<Your object type>
         if( snapshot.connectionState == ConnectionState.waiting){
           return  const Center(child: Text('Please wait its loading...'));
         }else{
@@ -29,7 +35,7 @@ class _addAvatarState extends State<addAvatar> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
 
-
+            print(snapshot.data!);
 
             return CircleAvatar(
               radius: 25,
@@ -38,19 +44,15 @@ class _addAvatarState extends State<addAvatar> {
                   ? ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child:
-                  Image.memory(
+                  Image.network(
                     snapshot.data!,
-                    fit: BoxFit.fitHeight,
-                      width: 100,
-                      height: 100
+                    fit: BoxFit.fill,
                   )
               )
                   : Container(
                 decoration: BoxDecoration(
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(20)),
-                width: 100,
-                height: 100,
                 child: Icon(
                   Icons.account_circle,
                   color: Colors.grey[800],
@@ -155,7 +157,9 @@ class _HomeScreenState extends  State<HomeScreen> with WidgetsBindingObserver {
           ),
         ),
         body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('users').snapshots(),
+          stream: FirebaseFirestore.instance.collection('users').where(
+            "id", isNotEqualTo: Auth().currentUser()
+          ).snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
             if (snapshot.hasError) {
@@ -180,6 +184,10 @@ class _HomeScreenState extends  State<HomeScreen> with WidgetsBindingObserver {
                     print(data["isOnline"].runtimeType);
 
                     print(data["id"]);
+
+                   var imagePath = data["email"] + "/profile/" + data["imageUrl"];
+
+                   print("imagePath $imagePath");
                     
                 return GestureDetector(
                   onTap: () => Navigator.push(
@@ -191,7 +199,11 @@ class _HomeScreenState extends  State<HomeScreen> with WidgetsBindingObserver {
                   child: ListTile(
                     title: Row(
                       children: [
-                        addAvatar(),
+
+
+
+                        addAvatar(imagePath: imagePath),
+
                         const SizedBox(width: 50),
                         Text(data['name']),
                         const SizedBox(width: 50),

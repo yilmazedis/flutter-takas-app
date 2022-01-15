@@ -1,3 +1,4 @@
+import 'dart:html';
 import 'dart:io' as i;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +23,7 @@ class _SignupPageState extends State<SignupPage> {
 
   var webImage;
   var imageName;
+  var extension;
 
   _imgFromGallery() async {
 
@@ -29,6 +31,8 @@ class _SignupPageState extends State<SignupPage> {
         source: ImageSource.gallery);
 
     imageName = image?.name;
+    extension = imageName.split('.').last;
+
     var f = await image?.readAsBytes();
 
     setState(() {
@@ -143,15 +147,12 @@ class _SignupPageState extends State<SignupPage> {
                   minWidth: double.infinity,
                   height: 60,
                   onPressed: () {
-
-                    Auth().uploadData(webImage, imageName);
-                    // Auth()
-                    //     .signUp(name.text, email.text, confirmPassword.text)
-                    //     .then((user) {
-                    //
-                    //   authStatus(context, user);
-                    //
-                    // });
+                    var imagePath = email.text + "/profile/" + imageName;
+                    Auth().uploadData(webImage, imagePath, extension);
+                    Auth().signUp(name.text, email.text, confirmPassword.text, imageName)
+                        .then((user) {
+                        authStatus(context, user);
+                    });
                   },
                   color: Colors.greenAccent,
                   elevation: 0,

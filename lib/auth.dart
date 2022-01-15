@@ -22,7 +22,7 @@ class Auth {
 
   List<UserData> users = [];
 
-  Future<Uint8List?> downloadData(String name) async {
+  Future<String> downloadUrl(String name) async {
 
     FirebaseStorage storage =
     FirebaseStorage.instanceFor(
@@ -33,35 +33,17 @@ class Auth {
     try {
 
       // Get raw data.
-      var downloadedData = await ref.getData();
+      var url = await ref.getDownloadURL();
       // prints -> Hello World!
-      print("downloaded data" + utf8.decode(downloadedData!));
-
-      return downloadedData;
-
+      print("downloaded data" + url);
+      return url;
     } catch (e) {
       print("error while downloading  $e");
-      return null;
+      return "";
     }
   }
 
-  Future<void> uploadFile(String filePath) async {
-    i.File file = i.File(filePath);
-
-    try {
-      FirebaseStorage storage = FirebaseStorage.instanceFor(
-          bucket: 'gs://takas-e8b2b.appspot.com/');
-
-      final ref = storage.refFromURL('gs://takas-e8b2b.appspot.com/');
-
-      await ref.putFile(file);
-    }  catch (e) {
-      // e.g, e.code == 'canceled'
-      print("error while uploading file");
-    }
-  }
-
-  Future<void> uploadData(Uint8List data, String name) async {
+  Future<void> uploadData(Uint8List data, String name, String? extension) async {
 
     FirebaseStorage storage =
     FirebaseStorage.instanceFor(
@@ -70,15 +52,11 @@ class Auth {
     final ref = storage.refFromURL('gs://takas-e8b2b.appspot.com/' + name);
 
     try {
-      // Upload raw data.
-      // await ref.putData(data);
-      // // Get raw data.
-      // Uint8List? downloadedData = await ref.getData();
-      // // prints -> Hello World!
-      // print(utf8.decode(downloadedData!));
-
-
-      ref.putData(data, SettableMetadata(contentType: 'image/png'));
+      if (extension != null) {
+        ref.putData(data, SettableMetadata(contentType: 'image/$extension'));
+      } else {
+        ref.putData(data, SettableMetadata(contentType: 'image/png'));
+      }
     } catch (e) {
       // e.g, e.code == 'canceled'
       print("error while uploading data");
@@ -199,7 +177,7 @@ class Auth {
     return null;
   }
 
-  Future<User?> signUp(name, email, password) async {
+  Future<User?> signUp(name, email, password, imageName) async {
 
     try {
       UserCredential result = await auth.createUserWithEmailAndPassword(
@@ -210,18 +188,15 @@ class Auth {
             "id": result.user?.uid,
             "name": name,
             "email": email,
-            "imageUrl": "",
+            "imageUrl": imageName,
             "isOnline": true,
           }
       );
 
-
-
       return result.user;
     } on FirebaseAuthException catch (e) {
-      print("Could not sign up");
+      print("Could not sign up e=$e");
     }
-
     return null;
   }
 
