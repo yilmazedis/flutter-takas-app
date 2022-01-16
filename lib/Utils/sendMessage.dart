@@ -36,7 +36,7 @@ Widget sendMessageArea(BuildContext context, String toUserId) {
           color: Theme.of(context).primaryColor,
           onPressed: () {
             Message message = Message(
-              fromUser: Auth().currentUser(),
+              fromUser: Auth().currentUserId(),
               toUser: toUserId,
               time: DateTime.now(),
               text: messageText.text,

@@ -1,30 +1,22 @@
-import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:takas_app/Utils/AddItemDialog.dart';
 import 'package:takas_app/Utils/addAvatar.dart';
-import 'package:takas_app/Utils/common.dart';
 import 'package:takas_app/auth.dart';
-import 'package:takas_app/models/item.dart';
 import 'package:takas_app/models/message.dart';
-import 'package:takas_app/models/user.dart';
-import 'package:takas_app/screens/chat.dart';
-import 'package:takas_app/screens/home.dart';
 
 // command to run flutter web:   flutter run -d chrome --web-renderer html
 // command to build flutter web for release: flutter build web --web-renderer html --release
 
-class MyItems extends StatefulWidget {
-  const MyItems({Key? key}) : super(key: key);
+class AllItems extends StatefulWidget {
+  const AllItems({Key? key}) : super(key: key);
 
   @override
-  _MyItemsState createState() => _MyItemsState();
+  _AllItemsState createState() => _AllItemsState();
 }
 
-class _MyItemsState extends State<MyItems> with WidgetsBindingObserver {
+class _AllItemsState extends State<AllItems> with WidgetsBindingObserver {
   List<Message> users = [];
 
   // TODO: logout if shutdown app without logout
@@ -62,7 +54,7 @@ class _MyItemsState extends State<MyItems> with WidgetsBindingObserver {
         appBar: AppBar(
           elevation: 8,
           title: const Text(
-            'My Items',
+            'All Items',
             style: TextStyle(
               color: Colors.white,
             ),
@@ -72,12 +64,11 @@ class _MyItemsState extends State<MyItems> with WidgetsBindingObserver {
               icon: const Icon(Icons.add),
               color: Colors.white,
               onPressed: () {
-                  showDialog(
-                  context: context,
-                  builder: (_) {
-                    return AddItemDialog();
-                  });
-
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return AddItemDialog();
+                    });
               },
             ),
           ],
@@ -107,12 +98,12 @@ class _MyItemsState extends State<MyItems> with WidgetsBindingObserver {
                 },
               ),
               ListTile(
-                title: const Text('All Items'),
+                title: const Text('My Items'),
                 onTap: () {
                   // Update the state of the app.
                   // ...
                   Navigator.of(context)
-                      .pushNamedAndRemoveUntil('/AllItems', (route) => false);
+                      .pushNamedAndRemoveUntil('/MyItems', (route) => false);
                 },
               ),
               ListTile(
@@ -129,9 +120,6 @@ class _MyItemsState extends State<MyItems> with WidgetsBindingObserver {
         ),
         body:StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection('items')
-
-              //.where("userId", isEqualTo: Auth().currentUserId())
-              .where("userId", isEqualTo: "XhoTwqvFTIf5Zln2BuBgufCdF7l2")
               .snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
@@ -164,7 +152,7 @@ class _MyItemsState extends State<MyItems> with WidgetsBindingObserver {
                 print("imagePath $imagePath");
 
                 return GestureDetector(
-                 // onTap: () => ,
+                  // onTap: () => ,
                   child: ListTile(
                     title: Row(
                       children: [

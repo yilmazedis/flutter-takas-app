@@ -89,11 +89,20 @@ class Auth {
     }
   }
 
+  Future<void> addItem(Map<String, dynamic> itemDataMap) {
+    // Call the user's CollectionReference to add a new user
+    return db
+        .collection('items')
+        .add(itemDataMap)
+        .then((value) => print("Item Added"))
+        .catchError((error) => print("Failed to add item: $error"));
+  }
+
   Future<void> addUser(Map<String, dynamic> userDataMap) {
     // Call the user's CollectionReference to add a new user
     return db
         .collection('users')
-        .doc(currentUser())
+        .doc(currentUserId())
         .set(userDataMap)
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
@@ -106,7 +115,7 @@ class Auth {
 
     return db
         .collection('users')
-        .doc(currentUser())
+        .doc(currentUserId())
         .update({'isOnline': isOnline})
         .then((value) => print("Updated User Status"))
         .catchError((error) => print("Failed to add user: $error"));
@@ -141,7 +150,18 @@ class Auth {
     });
   }
 
-  String currentUser() {
+  // TODO: do email verification
+  String currentUserEmail() {
+    var user = FirebaseAuth.instance.currentUser;
+
+    if (user != null && user.email != null) {
+      return user.email!;
+    }
+    return "";
+    // here you write the codes to input the data into firestore
+  }
+
+  String currentUserId() {
     var user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {

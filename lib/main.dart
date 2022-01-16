@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:takas_app/screens/allItems.dart';
 import 'package:takas_app/screens/home.dart';
 import 'package:takas_app/screens/mainPage.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,13 +21,14 @@ Future<void> main() async {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const MainPage(),
+      home: const MyItems(),
       initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/HomeScreen': (context) => const HomeScreen(),
         '/MyItems': (context) => const MyItems(),
+        '/AllItems': (context) => const AllItems(),
       },
     )
   );

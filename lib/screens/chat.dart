@@ -95,10 +95,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     print(data["time"]);
                     print(data["text"]);
                     if ((data["fromUser"] == widget.userData.id &&
-                        data["toUser"] == Auth().currentUser())
+                        data["toUser"] == Auth().currentUserId())
                         ||
                         (data["toUser"] == widget.userData.id &&
-                        data["fromUser"] == Auth().currentUser())) {
+                        data["fromUser"] == Auth().currentUserId())) {
                       Message message = Message(
                         fromUser: data["fromUser"],
                         toUser: data["toUser"],
@@ -106,7 +106,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         text: data["text"],
                       );
 
-                      final bool isMe = data["fromUser"] == Auth().currentUser();
+                      final bool isMe = data["fromUser"] == Auth().currentUserId();
                       return chatBubble(context, message, isMe);
                     } else {
                       return Container ();

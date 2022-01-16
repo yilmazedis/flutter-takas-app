@@ -27,8 +27,7 @@ class _SignupPageState extends State<SignupPage> {
     var image = await ImagePicker().pickImage(
         source: ImageSource.gallery);
 
-    imageName = image?.name;
-    extension = imageName.split('.').last;
+
 
     var f = await image?.readAsBytes();
 
@@ -38,6 +37,9 @@ class _SignupPageState extends State<SignupPage> {
       } else {
         _image = i.File((image?.path)!);
       }*/
+
+      imageName = image?.name;
+      extension = imageName.split('.').last;
 
       webImage = f;
     });

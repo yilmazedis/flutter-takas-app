@@ -93,6 +93,12 @@ class _HomeScreenState extends  State<HomeScreen> with WidgetsBindingObserver {
                 },
               ),
               ListTile(
+                title: const Text('All Items'),
+                onTap: () {
+                  Navigator.of(context).pushNamedAndRemoveUntil('/AllItems', (route) => false);
+                },
+              ),
+              ListTile(
                 title: const Text("Log Out"),
                 onTap: () {
                   Auth().signOut();
@@ -105,7 +111,7 @@ class _HomeScreenState extends  State<HomeScreen> with WidgetsBindingObserver {
         ),
         body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection('users').where(
-            "id", isNotEqualTo: Auth().currentUser()
+            "id", isNotEqualTo: Auth().currentUserId()
           ).snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
