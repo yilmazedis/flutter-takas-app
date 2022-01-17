@@ -21,17 +21,28 @@ class MainPage extends StatelessWidget {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  const Text("Welcome", style: TextStyle(
+                  const Text("Hoş Geldiniz", style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 30
                   ),),
                   const SizedBox(height: 20,),
-                  Text("Automatic identity verification which enables you to verify your identity",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.grey[700],
-                        fontSize: 15
-                    ),),
+                  Column(
+                    children: [
+                      Text("Gebze Anadolu Lisesi Kitap Dönüşüm Uygulaması",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.grey[700],
+                            fontSize: 15
+                        ),),
+                      const SizedBox(width: 50),
+                      Text("Geliştirici Ahmet Recai Elcan",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.grey[700],
+                            fontSize: 15
+                        ),),
+                    ],
+                  ),
                 ],
               ),
               Container(
@@ -56,7 +67,7 @@ class MainPage extends StatelessWidget {
                         ),
                         borderRadius: BorderRadius.circular(50)
                     ),
-                    child: const Text("Login", style: TextStyle(
+                    child: const Text("Giriş Yap", style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 18
                     ),),
@@ -84,7 +95,7 @@ class MainPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)
                       ),
-                      child: const Text("Sign up", style: TextStyle(
+                      child: const Text("Kaydol", style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 18
                       ),),

@@ -20,7 +20,15 @@ class _addAvatarState extends State<addAvatar> {
       future: Auth().downloadUrl(widget.imagePath), // function where you call your api
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {  // AsyncSnapshot<Your object type>
         if( snapshot.connectionState == ConnectionState.waiting){
-          return  const Center(child: Text('Please wait its loading...'));
+          return  Container(
+            decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(20)),
+            child: Icon(
+              Icons.account_circle,
+              color: Colors.grey[800],
+            ),
+          );
         }else{
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));

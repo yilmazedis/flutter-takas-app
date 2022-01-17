@@ -71,15 +71,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
   addFireBase() {
 
-    //var imagePath = Auth().currentUserEmail() + "/items/" + imageName;
-    var imagePath = "yilmaz@flutter.com/items/" + imageName;
+    var imagePath = Auth().currentUserEmail() + "/items/" + imageName;
+    //var imagePath = "yilmaz@flutter.com/items/" + imageName;
 
     Auth().uploadData(webImage!, imagePath, extension).then((value) {
       Auth().addItem({
         "name": itemName.text,
         "time": DateTime.now(),
-        "userId": "XhoTwqvFTIf5Zln2BuBgufCdF7l2",
-        "imageUrl": imageName,
+        "userId": Auth().currentUserId(),
+        "imageUrl": imagePath,
         "feature_1": itemFeature_1.text,
         "feature_2": itemFeature_2.text,
         "feature_3": itemFeature_3.text
@@ -94,16 +94,18 @@ class _AddItemDialogState extends State<AddItemDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Add Item'),
-      content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            getAvatar(),
-            makeInput(label: "Name", userController: itemName),
-            makeInput(label: "feature 1", userController: itemFeature_1),
-            makeInput(label: "feature 2", userController: itemFeature_2),
-            makeInput(label: "feature 3", userController: itemFeature_3),
-            makeButton("Add Item", addFireBase),
-          ]
+      content: SingleChildScrollView(
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              getAvatar(),
+              makeInput(label: "İsim", userController: itemName),
+              makeInput(label: "Yazar", userController: itemFeature_1),
+              makeInput(label: "Yayın", userController: itemFeature_2),
+              makeInput(label: "Sayfa Sayısı", userController: itemFeature_3),
+              makeButton("Kitap Ekle", addFireBase),
+            ]
+        ),
       ),
     );
   }

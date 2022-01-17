@@ -107,12 +107,12 @@ class _SignupPageState extends State<SignupPage> {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  const Text("Sign up", style: TextStyle(
+                  const Text("Kaydolun ", style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold
                   ),),
                   const SizedBox(height: 20,),
-                  Text("Create an account, It's free", style: TextStyle(
+                  Text("Hesap Açın, Bedava", style: TextStyle(
                       fontSize: 15,
                       color: Colors.grey[700]
                   ),),
@@ -121,12 +121,12 @@ class _SignupPageState extends State<SignupPage> {
               Column(
                 children: <Widget>[
                   getAvatar(),
-                  makeInput(label: "Name", userController: name),
+                  makeInput(label: "İsim", userController: name),
                   makeInput(label: "Email", userController: email),
-                  makeInput(label: "Password",
+                  makeInput(label: "Şifre",
                       userController: password,
                       obscureText: true),
-                  makeInput(label: "Confirm Password",
+                  makeInput(label: "Şifre Onayla",
                       userController: confirmPassword,
                       obscureText: true),
                 ],
@@ -158,7 +158,7 @@ class _SignupPageState extends State<SignupPage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50)
                   ),
-                  child: const Text("Sign up", style: TextStyle(
+                  child: const Text("Kaydol", style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 18
                   ),),
@@ -167,8 +167,8 @@ class _SignupPageState extends State<SignupPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const <Widget>[
-                  Text("Already have an account?"),
-                  Text(" Login", style: TextStyle(
+                  Text("Zaten bir hesabınız var mı?"),
+                  Text(" Giriş Yapın", style: TextStyle(
                       fontWeight: FontWeight.w600, fontSize: 18
                   ),),
                 ],

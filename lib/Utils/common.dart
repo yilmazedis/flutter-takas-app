@@ -2,10 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:takas_app/screens/home.dart';
-import '../auth.dart';
-import '../itemScreen.dart';
-
+import 'package:takas_app/screens/DrawerScreen.dart';
 
 Future<Widget?> authStatus(BuildContext context, User? user) async {
   Timer? timer = Timer(const Duration(milliseconds: 3000), (){
@@ -17,11 +14,11 @@ Future<Widget?> authStatus(BuildContext context, User? user) async {
         context: context,
         builder: (context) {
           return const AlertDialog(
-            title: Text('Success'),
+            title: Text('Başarılı Erişim'),
           );
         }).then((value){
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const DrawerScreen()));
 
       // dispose the timer in case something else has triggered the dismiss.
       timer?.cancel();
@@ -33,7 +30,7 @@ Future<Widget?> authStatus(BuildContext context, User? user) async {
         context: context,
         builder: (context) {
           return const AlertDialog(
-            title: Text('Fail'),
+            title: Text('Hatalı Erişim'),
           );
         }).then((value){
       // dispose the timer in case something else has triggered the dismiss.

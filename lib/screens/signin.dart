@@ -38,12 +38,12 @@ class LoginPage extends StatelessWidget {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      const Text("Login", style: TextStyle(
+                      const Text("Giriş Yap", style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold
                       ),),
                       const SizedBox(height: 20,),
-                       Text("Login to your account", style: TextStyle(
+                       Text("Hesabınıza Giriş Yapın", style: TextStyle(
                         fontSize: 15,
                         color: Colors.grey[700]
                       ),),
@@ -54,7 +54,7 @@ class LoginPage extends StatelessWidget {
                     child: Column(
                       children: <Widget>[
                          makeInput(label: "Email", userController: email),
-                        makeInput(label: "Password", userController: password, obscureText: true),
+                        makeInput(label: "Şifre", userController: password, obscureText: true),
                       ],
                     ),
                   ),
@@ -84,7 +84,7 @@ class LoginPage extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)
                         ),
-                        child: const Text("Login", style: TextStyle(
+                        child: const Text("Giriş Yap", style: TextStyle(
                           fontWeight: FontWeight.w600, 
                           fontSize: 18
                         ),),
@@ -94,8 +94,8 @@ class LoginPage extends StatelessWidget {
                    Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const <Widget>[
-                      Text("Don't have an account?"),
-                      Text("Sign up", style: TextStyle(
+                      Text("Hesabınız Yoksa mu?"),
+                      Text(" Kaydol", style: TextStyle(
                         fontWeight: FontWeight.w600, fontSize: 18
                       ),),
                     ],

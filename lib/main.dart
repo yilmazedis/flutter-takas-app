@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:takas_app/screens/allItems.dart';
-import 'package:takas_app/screens/home.dart';
 import 'package:takas_app/screens/mainPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:takas_app/screens/myItems.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,14 +18,14 @@ Future<void> main() async {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const MyItems(),
       initialRoute: '/',
       routes: {
+        '/': (context) => const MainPage(),
         // When navigating to the "/" route, build the FirstScreen widget.
         // When navigating to the "/second" route, build the SecondScreen widget.
-        '/HomeScreen': (context) => const HomeScreen(),
-        '/MyItems': (context) => const MyItems(),
-        '/AllItems': (context) => const AllItems(),
+        // '/HomeScreen': (context) => const HomeScreen(),
+        // '/MyItems': (context) => const MyItems(),
+        // '/AllItems': (context) => const AllItems(),
       },
     )
   );

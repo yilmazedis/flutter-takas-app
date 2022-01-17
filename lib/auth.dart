@@ -89,18 +89,18 @@ class Auth {
     }
   }
 
-  Future<void> addItem(Map<String, dynamic> itemDataMap) {
+  void addItem(Map<String, dynamic> itemDataMap) {
     // Call the user's CollectionReference to add a new user
-    return db
+      db
         .collection('items')
         .add(itemDataMap)
         .then((value) => print("Item Added"))
         .catchError((error) => print("Failed to add item: $error"));
   }
 
-  Future<void> addUser(Map<String, dynamic> userDataMap) {
+  void addUser(Map<String, dynamic> userDataMap) {
     // Call the user's CollectionReference to add a new user
-    return db
+        db
         .collection('users')
         .doc(currentUserId())
         .set(userDataMap)
@@ -108,7 +108,7 @@ class Auth {
         .catchError((error) => print("Failed to add user: $error"));
   }
 
-  Future<void> updateUserStatus(bool isOnline) {
+  Future<void> updateUserStatus(bool isOnline) async {
     // Call the user's CollectionReference to add a new user
 
     print('User Status is $isOnline');
@@ -224,7 +224,7 @@ class Auth {
     users.clear();
   }
 
-  Future<bool> signOut() async {
+  Future<void> signOut() async {
 
     clearAll();
 
@@ -235,6 +235,5 @@ class Auth {
 
       print(e.code + ' Could not signOut');
     }
-    return true;
   }
 }
