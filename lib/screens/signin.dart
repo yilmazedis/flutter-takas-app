@@ -5,11 +5,41 @@ import 'package:takas_app/itemScreen.dart';
 
 import '../Utils/common.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
 
   final email = TextEditingController();
   final password = TextEditingController();
+
+  bool emailValidate = false;
+  bool passwordValidate = false;
+  String emailMessage = "Lütfen Bu Alanı Boş Bırakmayın";
+  String passwordMessage = "Lütfen Bu Alanı Boş Bırakmayın";
+
+  bool validateTextField() {
+    setState(() {
+      emailValidate = email.text.isEmpty ? true : false;
+      passwordValidate = password.text.isEmpty ? true : false;
+    });
+
+    // return if anyone is set as true
+    for (var element in [emailValidate, passwordValidate]) {
+      if (element) {
+        return false;
+      }
+    }
+    setState(() {
+      emailValidate = false;
+      passwordValidate = false;
+    });
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +83,8 @@ class LoginPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: Column(
                       children: <Widget>[
-                         makeInput(label: "Email", userController: email),
-                        makeInput(label: "Şifre", userController: password, obscureText: true),
+                         makeInput(label: "Email", userController: email, validate: emailValidate, message: emailMessage),
+                        makeInput(label: "Şifre", userController: password, obscureText: true, validate: passwordValidate, message: passwordMessage),
                       ],
                     ),
                   ),
@@ -75,9 +105,11 @@ class LoginPage extends StatelessWidget {
                         minWidth: double.infinity,
                         height: 60,
                         onPressed: () {
-                          Auth().signIn(email.text,  password.text).then((user) {
-                            authStatus(context, user);
-                          });
+                          if (validateTextField()) {
+                            Auth().signIn(email.text,  password.text).then((user) {
+                              authStatus(context, user);
+                            });
+                          }
                         },
                         color: Colors.greenAccent,
                         elevation: 0,

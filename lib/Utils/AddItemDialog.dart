@@ -71,22 +71,35 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
   addFireBase() {
 
-    var imagePath = Auth().currentUserEmail() + "/items/" + imageName;
+    if (webImage != null) {
+      var imagePath = Auth().currentUserEmail() + "/items/" + imageName;
 
-    Auth().uploadData(webImage!, imagePath, extension).then((url) {
-      Auth().addItem({
-        "name": itemName.text,
-        "time": DateTime.now(),
-        "userId": Auth().currentUserId(),
-        "imageUrl": url,
-        "feature_1": itemFeature_1.text,
-        "feature_2": itemFeature_2.text,
-        "feature_3": itemFeature_3.text
+      Auth().uploadData(webImage!, imagePath, extension).then((url) {
+        Auth().addItem({
+          "name": itemName.text,
+          "time": DateTime.now(),
+          "userId": Auth().currentUserId(),
+          "imageUrl": url,
+          "feature_1": itemFeature_1.text,
+          "feature_2": itemFeature_2.text,
+          "feature_3": itemFeature_3.text
+        });
       });
-    });
 
-    print("hello man!");
-    Navigator.of(context).pop();
+      print("hello man!");
+      Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: const Text('Lütfen kitap resmi ekleyiniz'),
+        action: SnackBarAction(
+          label: 'Tamam',
+          onPressed: () {
+            //_imgFromGallery();
+          },
+        ),
+      ));
+    }
   }
 
   @override

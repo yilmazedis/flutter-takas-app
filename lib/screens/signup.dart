@@ -26,9 +26,6 @@ class _SignupPageState extends State<SignupPage> {
 
     var image = await ImagePicker().pickImage(
         source: ImageSource.gallery);
-
-
-
     var f = await image?.readAsBytes();
 
     setState(() {
@@ -40,7 +37,6 @@ class _SignupPageState extends State<SignupPage> {
 
       imageName = image?.name;
       extension = imageName.split('.').last;
-
       webImage = f;
     });
   }
@@ -76,6 +72,50 @@ class _SignupPageState extends State<SignupPage> {
         ),
       )
     );
+  }
+
+  bool nameValidate = false;
+  bool emailValidate = false;
+  bool passwordValidate = false;
+  bool cPasswordValidate = false;
+
+  String nameMessage = "Lütfen Bu Alanı Boş Bırakmayın";
+  String emailMessage = "Lütfen Bu Alanı Boş Bırakmayın";
+  String passwordMessage = "Lütfen Bu Alanı Boş Bırakmayın";
+  String cPasswordMessage = "Lütfen Bu Alanı Boş Bırakmayın";
+
+  // bool nameCheck() {
+  //   if (name.text.isEmpty) {
+  //     setState(() {
+  //
+  //     });
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+  bool validateTextField() {
+    setState(() {
+      nameValidate = name.text.isEmpty ? true : false;
+      emailValidate = email.text.isEmpty ? true : false;
+      passwordValidate = password.text.isEmpty ? true : false;
+      cPasswordValidate = confirmPassword.text.isEmpty ? true : false;
+    });
+
+    // return if anyone is set as true
+    for (var element in [nameValidate, emailValidate, passwordValidate, cPasswordValidate]) {
+      if (element) {
+        return false;
+      }
+    }
+
+    setState(() {
+      nameValidate = false;
+      emailValidate = false;
+      passwordValidate = false;
+      cPasswordValidate = false;
+    });
+    return true;
   }
 
   @override
@@ -121,14 +161,14 @@ class _SignupPageState extends State<SignupPage> {
               Column(
                 children: <Widget>[
                   getAvatar(),
-                  makeInput(label: "İsim", userController: name),
-                  makeInput(label: "Email", userController: email),
+                  makeInput(label: "İsim", userController: name, validate: nameValidate, message: nameMessage),
+                  makeInput(label: "Email", userController: email, validate: emailValidate, message: emailMessage),
                   makeInput(label: "Şifre",
                       userController: password,
-                      obscureText: true),
+                      obscureText: true, validate: passwordValidate, message: passwordMessage),
                   makeInput(label: "Şifre Onayla",
                       userController: confirmPassword,
-                      obscureText: true),
+                      obscureText: true, validate: cPasswordValidate, message: cPasswordMessage),
                 ],
               ),
               Container(
@@ -146,14 +186,30 @@ class _SignupPageState extends State<SignupPage> {
                   minWidth: double.infinity,
                   height: 60,
                   onPressed: () {
-                    var imagePath = email.text + "/profile/" + imageName;
-                    Auth().uploadData(webImage, imagePath, extension).then((url) {
-                      print("url: $url");
-                      Auth().signUp(name.text, email.text, confirmPassword.text, url)
-                          .then((user) {
-                        authStatus(context, user);
-                      });
-                    });
+
+                    if (validateTextField()) {
+                      if (webImage != null) {
+                        var imagePath = email.text + "/profile/" + imageName;
+                        Auth().uploadData(webImage, imagePath, extension).then((url) {
+                          print("url: $url");
+                          Auth().signUp(name.text, email.text, confirmPassword.text, url)
+                              .then((user) {
+                            authStatus(context, user);
+                          });
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          content: const Text('Lütfen profil resmi ekleyiniz'),
+                          action: SnackBarAction(
+                            label: 'Tamam',
+                            onPressed: () {
+                              _imgFromGallery();
+                            },
+                          ),
+                        ));
+                      }
+                    }
                   },
                   color: Colors.greenAccent,
                   elevation: 0,

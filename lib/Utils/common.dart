@@ -71,7 +71,7 @@ Widget makeButton(String text, f) {
   );
 }
 
-Widget makeInput({label, userController, obscureText = false}) {
+Widget makeInput({label, userController, obscureText = false, validate = false, message}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -84,7 +84,9 @@ Widget makeInput({label, userController, obscureText = false}) {
       TextField(
         controller: userController,
         obscureText: obscureText,
+
         decoration: InputDecoration(
+          errorText: validate ? message : null,
           contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color:  Colors.grey.shade400)
