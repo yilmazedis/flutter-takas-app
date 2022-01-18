@@ -83,6 +83,7 @@ class _SignupPageState extends State<SignupPage> {
   String emailMessage = "Lütfen Bu Alanı Boş Bırakmayın";
   String passwordMessage = "Lütfen Bu Alanı Boş Bırakmayın";
   String cPasswordMessage = "Lütfen Bu Alanı Boş Bırakmayın";
+  String snackBarMessage = "";
 
   // bool nameCheck() {
   //   if (name.text.isEmpty) {
@@ -115,6 +116,13 @@ class _SignupPageState extends State<SignupPage> {
       passwordValidate = false;
       cPasswordValidate = false;
     });
+    return true;
+  }
+
+  bool comparePasswords() {
+    if (password.text != confirmPassword.text) {
+      return false;
+    }
     return true;
   }
 
@@ -189,14 +197,27 @@ class _SignupPageState extends State<SignupPage> {
 
                     if (validateTextField()) {
                       if (webImage != null) {
-                        var imagePath = email.text + "/profile/" + imageName;
-                        Auth().uploadData(webImage, imagePath, extension).then((url) {
-                          print("url: $url");
-                          Auth().signUp(name.text, email.text, confirmPassword.text, url)
-                              .then((user) {
-                            authStatus(context, user);
+                        if (comparePasswords()) {
+                          var imagePath = email.text + "/profile/" + imageName;
+                          Auth().uploadData(webImage, imagePath, extension).then((url) {
+                            print("url: $url");
+                            Auth().signUp(name.text, email.text, confirmPassword.text, url)
+                                .then((user) {
+                              authStatus(context, user);
+                            });
                           });
-                        });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            content: const Text('Şifreniz aynı değil, kontrol ediniz.'),
+                            action: SnackBarAction(
+                              label: 'Tamam',
+                              onPressed: () {
+                                _imgFromGallery();
+                              },
+                            ),
+                          ));
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           behavior: SnackBarBehavior.floating,
