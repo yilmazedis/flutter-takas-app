@@ -20,6 +20,7 @@ class Auth {
 
   FirebaseFirestore db = FirebaseFirestore.instance;
 
+
   List<UserData> users = [];
 
   Future<String> downloadUrl(String name) async {
@@ -43,7 +44,7 @@ class Auth {
     }
   }
 
-  Future<void> uploadData(Uint8List data, String name, String? extension) async {
+  Future<String> uploadData(Uint8List data, String name, String? extension) async {
 
     FirebaseStorage storage =
     FirebaseStorage.instanceFor(
@@ -53,13 +54,15 @@ class Auth {
 
     try {
       if (extension != null) {
-        ref.putData(data, SettableMetadata(contentType: 'image/$extension'));
+        await ref.putData(data, SettableMetadata(contentType: 'image/$extension'));
       } else {
-        ref.putData(data, SettableMetadata(contentType: 'image/png'));
+        await ref.putData(data, SettableMetadata(contentType: 'image/png'));
       }
+      return await ref.getDownloadURL();
     } catch (e) {
       // e.g, e.code == 'canceled'
       print("error while uploading data");
+      return "";
     }
   }
 
@@ -197,7 +200,7 @@ class Auth {
     return null;
   }
 
-  Future<User?> signUp(name, email, password, imageName) async {
+  Future<User?> signUp(name, email, password, url) async {
 
     try {
       UserCredential result = await auth.createUserWithEmailAndPassword(
@@ -208,7 +211,7 @@ class Auth {
             "id": result.user?.uid,
             "name": name,
             "email": email,
-            "imageUrl": imageName,
+            "imageUrl": url,
             "isOnline": true,
           }
       );

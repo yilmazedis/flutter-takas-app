@@ -1,19 +1,10 @@
-import 'dart:typed_data';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:takas_app/Utils/AddItemDialog.dart';
 import 'package:takas_app/Utils/AllItems.dart';
 import 'package:takas_app/Utils/MyItems.dart';
-import 'package:takas_app/Utils/addAvatar.dart';
-import 'package:takas_app/Utils/itemCard.dart';
 import 'package:takas_app/Utils/userChat.dart';
 import 'package:takas_app/auth.dart';
-import 'package:takas_app/models/item.dart';
-import 'package:takas_app/models/message.dart';
-import 'package:takas_app/models/user.dart';
-import 'package:takas_app/screens/chat.dart';
 
 // command to run flutter web:   flutter run -d chrome --web-renderer html
 // command to build flutter web for release: flutter build web --web-renderer html --release
@@ -86,11 +77,18 @@ class _DrawerScreenState extends State<DrawerScreen>
             ),
           ),
           actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.search),
+              selectedScreen == 1 ? IconButton(
+              icon: const Icon(Icons.add),
               color: Colors.white,
-              onPressed: () {},
-            ),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return AddItemDialog();
+                    });
+              },
+            ):
+            const Icon(Icons.search)
           ],
           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),

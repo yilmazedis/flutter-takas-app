@@ -72,14 +72,13 @@ class _AddItemDialogState extends State<AddItemDialog> {
   addFireBase() {
 
     var imagePath = Auth().currentUserEmail() + "/items/" + imageName;
-    //var imagePath = "yilmaz@flutter.com/items/" + imageName;
 
-    Auth().uploadData(webImage!, imagePath, extension).then((value) {
+    Auth().uploadData(webImage!, imagePath, extension).then((url) {
       Auth().addItem({
         "name": itemName.text,
         "time": DateTime.now(),
         "userId": Auth().currentUserId(),
-        "imageUrl": imagePath,
+        "imageUrl": url,
         "feature_1": itemFeature_1.text,
         "feature_2": itemFeature_2.text,
         "feature_3": itemFeature_3.text

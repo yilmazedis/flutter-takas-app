@@ -147,10 +147,12 @@ class _SignupPageState extends State<SignupPage> {
                   height: 60,
                   onPressed: () {
                     var imagePath = email.text + "/profile/" + imageName;
-                    Auth().uploadData(webImage, imagePath, extension);
-                    Auth().signUp(name.text, email.text, confirmPassword.text, imageName)
-                        .then((user) {
+                    Auth().uploadData(webImage, imagePath, extension).then((url) {
+                      print("url: $url");
+                      Auth().signUp(name.text, email.text, confirmPassword.text, url)
+                          .then((user) {
                         authStatus(context, user);
+                      });
                     });
                   },
                   color: Colors.greenAccent,

@@ -39,7 +39,7 @@ userChat() {
 
           print(data["id"]);
 
-          var imagePath = data["email"] + "/profile/" + data["imageUrl"];
+          var imagePath = data["imageUrl"];
 
           print("imagePath $imagePath");
 
@@ -55,7 +55,7 @@ userChat() {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
                   children: [
-                    addAvatar(imagePath: imagePath),
+                    addAvatar(data["imageUrl"]),
                     Expanded(
                       child: Card(
                         semanticContainer: true,
