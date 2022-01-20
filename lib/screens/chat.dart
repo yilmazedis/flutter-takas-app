@@ -19,7 +19,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-
   List<Message> messages = [];
 
   @override
@@ -39,22 +38,21 @@ class _ChatScreenState extends State<ChatScreen> {
                     fontWeight: FontWeight.w400,
                   )),
               const TextSpan(text: '\n'),
-              widget.userData.isOnline ?
-              const TextSpan(
-                text: "Online",
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w400,
-                ),
-              )
-              :
-              const TextSpan(
-                text: 'Offline',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w400,
-                ),
-              )
+              widget.userData.isOnline
+                  ? const TextSpan(
+                      text: "Online",
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )
+                  : const TextSpan(
+                      text: 'Offline',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )
             ],
           ),
         ),
@@ -63,21 +61,25 @@ class _ChatScreenState extends State<ChatScreen> {
             color: Colors.white,
             onPressed: () {
               Navigator.pop(context);
-            }), systemOverlayStyle: SystemUiOverlayStyle.light,
+            }),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       body: Column(
         children: <Widget>[
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-
-              stream: FirebaseFirestore.instance.
-              collection('messages').
-              orderBy('time').
-              snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-
+              stream: FirebaseFirestore.instance
+                  .collection('messages')
+                  .where("toFromUser", whereIn: [ // index is used to use both where and orderBy.
+                    {"to": widget.userData.id, "from": Auth().currentUserId()},
+                    {"to": Auth().currentUserId(), "from": widget.userData.id}
+                  ])
+                  .orderBy('time')
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  print( widget.userData.id);
+                  print(widget.userData.id);
                   return const Text('Something went wrong');
                 }
 
@@ -87,31 +89,22 @@ class _ChatScreenState extends State<ChatScreen> {
                 // TODO: move list to bottom when new message is sent
                 return ListView(
                   padding: const EdgeInsets.all(20),
-                  children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                  children:
+                      snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
 
-                    print(data["fromUser"]);
-                    print(data["toUser"]);
-                    print(data["time"]);
-                    print(data["text"]);
-                    if ((data["fromUser"] == widget.userData.id &&
-                        data["toUser"] == Auth().currentUserId())
-                        ||
-                        (data["toUser"] == widget.userData.id &&
-                        data["fromUser"] == Auth().currentUserId())) {
                       Message message = Message(
-                        fromUser: data["fromUser"],
-                        toUser: data["toUser"],
+                        toFromUser: data["toFromUser"],
                         time: (data['time'] as Timestamp).toDate(),
                         text: data["text"],
                       );
 
-                      final bool isMe = data["fromUser"] == Auth().currentUserId();
+                      final bool isMe =
+                          data["toFromUser"]["from"] == Auth().currentUserId();
                       return chatBubble(context, message, isMe);
-                    } else {
-                      return Container ();
-                    }
-                }).toList(),
+
+                  }).toList(),
                 );
               },
             ),

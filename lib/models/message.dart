@@ -3,20 +3,17 @@ import 'package:takas_app/models/user.dart';
 class Message {
   final DateTime time;
   final String text;
-  final String fromUser;
-  final String toUser;
+  final Map<String, dynamic> toFromUser;
 
   Message({
-    required this.fromUser,
-    required this.toUser,
+    required this.toFromUser,
     required this.time,
     required this.text,
   });
 
   Map<String, dynamic> getDataMap() {
     return {
-      "fromUser": fromUser,
-      "toUser": toUser,
+      "toFromUser": toFromUser,
       "time": time,
       "text": text,
     };

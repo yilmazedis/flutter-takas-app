@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:takas_app/models/item.dart';
 
@@ -11,6 +12,14 @@ class ItemCard extends StatefulWidget {
 }
 
 class _ItemCardState extends State<ItemCard> {
+
+  Widget _sizedContainer(Widget child) {
+    return SizedBox(
+      width: 100.0,
+      child: Center(child: child),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,11 +28,12 @@ class _ItemCardState extends State<ItemCard> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           ClipRRect(
-            child: Image.network(
-              widget.data.imageUrl,
-              width: 87,
-            ),
-          ),
+              child: _sizedContainer(CachedNetworkImage(
+            imageUrl: widget.data.imageUrl,
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CircularProgressIndicator(value: downloadProgress.progress),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ))),
           Expanded(
             child: Card(
               clipBehavior: Clip.antiAlias,
@@ -66,7 +76,6 @@ class _ItemCardState extends State<ItemCard> {
                       ),
                     ],
                   ),
-
                 ],
               ),
             ),

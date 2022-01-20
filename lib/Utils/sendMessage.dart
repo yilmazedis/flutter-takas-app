@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:takas_app/models/message.dart';
@@ -36,8 +35,10 @@ Widget sendMessageArea(BuildContext context, String toUserId) {
           color: Theme.of(context).primaryColor,
           onPressed: () {
             Message message = Message(
-              fromUser: Auth().currentUserId(),
-              toUser: toUserId,
+              toFromUser: {
+                "from": Auth().currentUserId(),
+                "to": toUserId
+              },
               time: DateTime.now(),
               text: messageText.text,
             );

@@ -1,6 +1,5 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 addAvatar(url) {
   return CircleAvatar(
@@ -10,9 +9,11 @@ addAvatar(url) {
         ? ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child:
-        Image.network(
-          url,
-          fit: BoxFit.fill,
+        CachedNetworkImage(
+          imageUrl: url,
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
         )
     )
         : Container(
