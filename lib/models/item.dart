@@ -6,6 +6,8 @@ class Item {
   final String feature_1;
   final String feature_2;
   final String feature_3;
+  final List<dynamic> getRequest;
+  final String sendRequest;
 
   Item({
     required this.name,
@@ -15,6 +17,8 @@ class Item {
     required this.feature_1,
     required this.feature_2,
     required this.feature_3,
+    required this.getRequest,
+    required this.sendRequest,
   });
 
   Map<String, dynamic> getDataMap() {
@@ -26,6 +30,8 @@ class Item {
       "feature_1": feature_1,
       "feature_2": feature_2,
       "feature_3": feature_3,
+      "getRequest": getRequest,
+      "sendRequest": sendRequest,
     };
   }
 }

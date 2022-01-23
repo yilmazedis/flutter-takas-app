@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:takas_app/auth.dart';
 import 'package:takas_app/models/item.dart';
 
 import 'itemCard.dart';
 
 allItems() {
   return StreamBuilder<QuerySnapshot>(
-    stream: FirebaseFirestore.instance.collection('items').snapshots(),
+    stream: FirebaseFirestore.instance.collection('items').where("userId", isNotEqualTo: Auth().currentUserId()).snapshots(),
     builder:
         (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
@@ -27,6 +28,8 @@ allItems() {
           Map<String, dynamic> data =
           document.data()! as Map<String, dynamic>;
 
+
+
           Item item = Item(
               name: data["name"],
               userId: data["userId"],
@@ -34,9 +37,11 @@ allItems() {
               imageUrl: data["imageUrl"],
               feature_1: data["feature_1"],
               feature_2: data["feature_2"],
-              feature_3: data["feature_3"]);
+              feature_3: data["feature_3"],
+              getRequest: data["getRequest"],
+              sendRequest: data["sendRequest"]);
 
-          return ItemCard(data: item);
+          return ItemCard(data: item, docId: document.id);
         }).toList(),
       );
     },

@@ -113,7 +113,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
             "imageUrl": url,
             "feature_1": itemFeature_1.text,
             "feature_2": itemFeature_2.text,
-            "feature_3": itemFeature_3.text
+            "feature_3": itemFeature_3.text,
+            "getRequest": [],
+            "sendRequest": ""
           });
         });
 

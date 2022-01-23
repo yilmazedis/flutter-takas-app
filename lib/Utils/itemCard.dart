@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:takas_app/models/item.dart';
+import 'package:takas_app/screens/swapItemScreen.dart';
 
 class ItemCard extends StatefulWidget {
-  ItemCard({Key? key, required this.data}) : super(key: key);
+  ItemCard({Key? key, required this.data, required this.docId}) : super(key: key);
 
   Item data;
+  String docId;
 
   @override
   _ItemCardState createState() => _ItemCardState();
@@ -60,17 +62,25 @@ class _ItemCardState extends State<ItemCard> {
                     ),
                   ),
                   ButtonBar(
-                    alignment: MainAxisAlignment.start,
+                    alignment: MainAxisAlignment.end,
                     children: [
+                      // TextButton(
+                      //   onPressed: () {
+                      //     // Perform some action
+                      //   },
+                      //   child: const Text('Takas'),
+                      // ),
                       TextButton(
                         onPressed: () {
                           // Perform some action
-                        },
-                        child: const Text('Takas'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          // Perform some action
+
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SwapItem(docId: widget.docId),
+                            ),
+                          );
                         },
                         child: const Text('Takas'),
                       ),

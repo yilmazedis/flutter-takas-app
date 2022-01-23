@@ -140,6 +140,85 @@ class Auth {
         .catchError((error) => print("Failed to add user: $error"));
   }
 
+  Future<void> deleteAfterSwapComplete(desired, own) async {
+    // Call the user's CollectionReference to add a new user
+
+    QuerySnapshot snap = await db.collection('items').get();
+
+    snap.docs.forEach((document) {
+
+      Map<String, dynamic> data =
+      document.data()! as Map<String, dynamic>;
+
+      // if income id's desired or own, make empty string all related items' send request.
+      if (document.id == desired || document.id == own) {
+        for (String el in data["getRequest"]) {
+          db
+              .collection('items')
+              .doc(el)
+              .update({'sendRequest': ""})
+              .then((value) => print("Desired own request"))
+              .catchError((error) => print("Failed to Desired own request: $error"));
+        }
+      } else {
+        List getR = data["getRequest"];
+
+        // if income id's getRequest contains desired, delete.
+        if (getR.contains(desired)) {
+          db
+              .collection('items')
+              .doc(document.id)
+              .update({'getRequest': FieldValue.arrayRemove([desired])})
+              .then((value) => print("Desired swap request"))
+              .catchError((error) => print("Failed to sesired swap request: $error"));
+        }
+
+        // if income id's getRequest contains own, delete.
+        if (getR.contains(own)) {
+          db
+              .collection('items')
+              .doc(document.id)
+              .update({'getRequest': FieldValue.arrayRemove([own])})
+              .then((value) => print("Desired swap request"))
+              .catchError((error) => print("Failed to sesired swap request: $error"));
+        }
+      }
+    });
+
+
+
+    db
+        .collection('items')
+        .doc(desired)
+        .delete()
+        .then((value) => print("Deleted desired item"))
+        .catchError((error) => print("Failed to deleted desired item: $error"));
+
+    db
+        .collection('items')
+        .doc(own)
+        .delete()
+        .then((value) => print("Deleted own item"))
+        .catchError((error) => print("Failed to deleted own item: $error"));
+  }
+
+  Future<void> swapRequest(desired, own) async {
+    // Call the user's CollectionReference to add a new user
+    db
+        .collection('items')
+        .doc(desired)
+        .update({'getRequest': FieldValue.arrayUnion([own])})
+        .then((value) => print("Desired swap request"))
+        .catchError((error) => print("Failed to sesired swap request: $error"));
+
+    db
+        .collection('items')
+        .doc(own)
+        .update({'sendRequest': desired})
+        .then((value) => print("Desired own request"))
+        .catchError((error) => print("Failed to Desired own request: $error"));
+  }
+
   Future<void> sendMessage(Map<String, dynamic> messageDataMap) {
     // Call the user's CollectionReference to add a new user
     return db
