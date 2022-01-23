@@ -66,6 +66,11 @@ class _SwapItemState extends State<SwapItem> {
                     getRequest: data["getRequest"],
                     sendRequest: data["sendRequest"]);
 
+                // if this item has already request
+                if (item.sendRequest.isNotEmpty) {
+                  return Container();
+                }
+
                 return GestureDetector(
                   onTap: () {
                       Auth().swapRequest(widget.docId, document.id);

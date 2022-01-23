@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:takas_app/screens/DrawerScreen.dart';
 
 import 'main.dart';
+import 'models/item.dart';
 import 'models/message.dart';
 import 'models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -140,6 +141,44 @@ class Auth {
         .catchError((error) => print("Failed to add user: $error"));
   }
 
+  Future<Item> getRequestedItem(desired) async {
+    final document = await db.collection('items').doc(desired).get();
+
+    Map<String, dynamic> data = document.data()!;
+
+    Item item = Item(
+        name: data["name"],
+        userId: data["userId"],
+        time: (data["time"] as Timestamp).toDate(),
+        imageUrl: data["imageUrl"],
+        feature_1: data["feature_1"],
+        feature_2: data["feature_2"],
+        feature_3: data["feature_3"],
+        getRequest: data["getRequest"],
+        sendRequest: data["sendRequest"]);
+
+    return item;
+  }
+
+  Future<void> cancelSwapRequest(docId, desired) async {
+
+    // removed desired from getRequest content
+    db
+        .collection('items')
+        .doc(desired)
+        .update({'getRequest': FieldValue.arrayRemove([docId])})
+        .then((value) => print("Desired swap request"))
+        .catchError((error) => print("Failed to desired swap request: $error"));
+
+    // empty sendRequest in current item
+    db
+        .collection('items')
+        .doc(docId)
+        .update({'sendRequest': ""})
+        .then((value) => print("Desired swap request"))
+        .catchError((error) => print("Failed to sesired swap request: $error"));
+  }
+
   Future<void> deleteAfterSwapComplete(desired, own) async {
     // Call the user's CollectionReference to add a new user
 
@@ -180,13 +219,13 @@ class Auth {
               .doc(document.id)
               .update({'getRequest': FieldValue.arrayRemove([own])})
               .then((value) => print("Desired swap request"))
-              .catchError((error) => print("Failed to sesired swap request: $error"));
+              .catchError((error) => print("Failed to desired swap request: $error"));
         }
       }
     });
 
 
-
+    // delete after swap
     db
         .collection('items')
         .doc(desired)
