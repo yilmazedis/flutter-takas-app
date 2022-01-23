@@ -1,10 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as i;
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:takas_app/screens/DrawerScreen.dart';
 
+import 'main.dart';
+import 'models/message.dart';
 import 'models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -20,19 +24,16 @@ class Auth {
 
   FirebaseFirestore db = FirebaseFirestore.instance;
 
-
   List<UserData> users = [];
+  Map<String, dynamic> latestMessage = {};
 
   Future<String> downloadUrl(String name) async {
-
     FirebaseStorage storage =
-    FirebaseStorage.instanceFor(
-        bucket: 'gs://takas-e8b2b.appspot.com/');
+        FirebaseStorage.instanceFor(bucket: 'gs://takas-e8b2b.appspot.com/');
 
     final ref = storage.refFromURL('gs://takas-e8b2b.appspot.com/' + name);
 
     try {
-
       // Get raw data.
       var url = await ref.getDownloadURL();
       // prints -> Hello World!
@@ -44,17 +45,17 @@ class Auth {
     }
   }
 
-  Future<String> uploadData(Uint8List data, String name, String? extension) async {
-
+  Future<String> uploadData(
+      Uint8List data, String name, String? extension) async {
     FirebaseStorage storage =
-    FirebaseStorage.instanceFor(
-        bucket: 'gs://takas-e8b2b.appspot.com/');
+        FirebaseStorage.instanceFor(bucket: 'gs://takas-e8b2b.appspot.com/');
 
     final ref = storage.refFromURL('gs://takas-e8b2b.appspot.com/' + name);
 
     try {
       if (extension != null) {
-        await ref.putData(data, SettableMetadata(contentType: 'image/$extension'));
+        await ref.putData(
+            data, SettableMetadata(contentType: 'image/$extension'));
       } else {
         await ref.putData(data, SettableMetadata(contentType: 'image/png'));
       }
@@ -67,10 +68,8 @@ class Auth {
   }
 
   Future<void> uploadString() async {
-
     FirebaseStorage storage =
-    FirebaseStorage.instanceFor(
-        bucket: 'gs://takas-e8b2b.appspot.com/');
+        FirebaseStorage.instanceFor(bucket: 'gs://takas-e8b2b.appspot.com/');
 
     final ref = storage.refFromURL('gs://takas-e8b2b.appspot.com/');
 
@@ -80,7 +79,7 @@ class Auth {
       // Storage tasks function as a Delegating Future so we can await them.
       TaskSnapshot snapshot = await task;
       print('Uploaded ${snapshot.bytesTransferred} bytes.');
-    }  catch (e) {
+    } catch (e) {
       // The final snapshot is also available on the task via `.snapshot`,
       // this can include 2 additional states, `TaskState.error` & `TaskState.canceled`
       print(task.snapshot);
@@ -94,7 +93,7 @@ class Auth {
 
   void addItem(Map<String, dynamic> itemDataMap) {
     // Call the user's CollectionReference to add a new user
-      db
+    db
         .collection('items')
         .add(itemDataMap)
         .then((value) => print("Item Added"))
@@ -103,12 +102,29 @@ class Auth {
 
   void addUser(Map<String, dynamic> userDataMap) {
     // Call the user's CollectionReference to add a new user
-        db
+    db
         .collection('users')
         .doc(currentUserId())
         .set(userDataMap)
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  Future<void> updateUserMessageDate(friendId, text) async {
+    // Call the user's CollectionReference to add a new user
+        db
+        .collection('users')
+        .doc(friendId)
+          .update({'currentMessage': {"text": text, "time": DateTime.now()}})
+        .then((value) => print("Updated User messageDate"))
+        .catchError((error) => print("Failed to updated user messageDate: $error"));
+
+        db
+            .collection('users')
+            .doc(currentUserId())
+            .update({'currentMessage': {"text": text, "time": DateTime.now()}})
+            .then((value) => print("Updated User messageDate"))
+            .catchError((error) => print("Failed to updated user messageDate: $error"));
   }
 
   Future<void> updateUserStatus(bool isOnline) async {
@@ -133,22 +149,70 @@ class Auth {
         .catchError((error) => print("Failed to add user: $error"));
   }
 
-  Future<void> fetchUsers() {
+  Future<void> fetchUser() async {
+
+  print("enter fetch");
 
     // Call the user's CollectionReference to add a new user
-    return db
-        .collection('users')
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      for (var doc in querySnapshot.docs) {
-        users.add(
-            UserData(
-                id: doc["id"],
-                name: doc["name"],
-                email: doc["email"],
-                imageUrl: doc["imageUrl"],
-                isOnline: doc["isOnline"])
-        );
+    db.collection('users').where(
+        "id", isNotEqualTo: Auth().currentUserId()
+    ).
+    snapshots().listen((event) {
+
+      for (var docs in event.docChanges) {
+        // Do something with change
+
+        final doc = docs.doc;
+
+        if (docs.type != DocumentChangeType.removed) {
+
+          fetchLastMessage(doc);
+
+          print(doc["name"]);
+          users.add(UserData(
+              id: doc["id"],
+              name: doc["name"],
+              email: doc["email"],
+              imageUrl: doc["imageUrl"],
+              isOnline: doc["isOnline"]));
+        } else {
+          print(doc["name"] + " is removed");
+        }
+      }
+    });
+  }
+
+  Future<void> fetchLastMessage(docUser) async {
+      db.collection('messages')
+        .where("toFromUser", isEqualTo: {"to": Auth().currentUserId(), "from": docUser["id"]})
+        .orderBy("time", descending: true)
+        .limit(1)
+        .snapshots()
+        .listen((event) {
+
+          print("Triggered message toFromUser");
+
+      for (var docs in event.docChanges) {
+        // Do something with change
+
+        final doc = docs.doc;
+
+        if (docs.type != DocumentChangeType.removed) {
+
+          print(doc["text"]);
+
+          //latestMessage[friendId] = doc["text"];
+
+          //docUser["latestMessage"] = doc["text"];
+
+          //phobiasStream.add(docUser);
+
+          print(latestMessage.length);
+
+        } else {
+          print(doc["text"] + " is removed");
+          //latestMessage.re
+        }
       }
     });
   }
@@ -175,12 +239,11 @@ class Auth {
   }
 
   Future<User?> signIn(String email, String password) async {
-
     UserCredential result;
 
     try {
-      result =
-      await auth.signInWithEmailAndPassword(email: email, password: password);
+      result = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
       print('sign in is successful');
       updateUserStatus(true);
 
@@ -188,33 +251,28 @@ class Auth {
       //print(downloadURL());
 
       return result.user;
-
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
       } else if (e.code == 'wrong-password') {
         print('Wrong password provided for that user.');
       }
-
     }
     return null;
   }
 
   Future<User?> signUp(name, email, password, url) async {
-
     try {
       UserCredential result = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
 
-      addUser(
-          {
-            "id": result.user?.uid,
-            "name": name,
-            "email": email,
-            "imageUrl": url,
-            "isOnline": true,
-          }
-      );
+      addUser({
+        "id": result.user?.uid,
+        "name": name,
+        "email": email,
+        "imageUrl": url,
+        "isOnline": true,
+      });
 
       return result.user;
     } on FirebaseAuthException catch (e) {
@@ -228,14 +286,12 @@ class Auth {
   }
 
   Future<void> signOut() async {
-
     clearAll();
 
     try {
       updateUserStatus(false);
       await auth.signOut();
     } on FirebaseAuthException catch (e) {
-
       print(e.code + ' Could not signOut');
     }
   }

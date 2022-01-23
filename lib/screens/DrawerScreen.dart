@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:takas_app/Utils/AddItemDialog.dart';
@@ -9,6 +11,8 @@ import 'package:takas_app/auth.dart';
 // command to run flutter web:   flutter run -d chrome --web-renderer html
 // command to build flutter web for release: flutter build web --web-renderer html --release
 
+//StreamController<Map<String, dynamic>> phobiasStream = StreamController<Map<String, dynamic>>();
+
 class DrawerScreen extends StatefulWidget {
   const DrawerScreen({Key? key}) : super(key: key);
 
@@ -18,10 +22,24 @@ class DrawerScreen extends StatefulWidget {
 
 class _DrawerScreenState extends State<DrawerScreen>
     with WidgetsBindingObserver {
+
+
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
+
+    //
+    //
+    // Auth().fetchUser().then((value) {
+    //   // for (var user in Auth().users) {
+    //   //   Auth().fetchLastMessage(user.id);
+    //   //   print("sdsd");
+    //   // }
+    // });
+
+    screen = userChatStream;
   }
 
   @override
@@ -53,9 +71,13 @@ class _DrawerScreenState extends State<DrawerScreen>
     }
   }
 
+  Widget myItemsStream = myItems();
+  Widget allItemsStream = allItems();
+  Widget userChatStream = userChat();
+
   int selectedScreen = 0;
   String menuName = "Konuşmalar";
-  Widget screen = userChat();
+  late Widget screen;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +110,15 @@ class _DrawerScreenState extends State<DrawerScreen>
                     });
               },
             ):
-            const Icon(Icons.search)
+            IconButton(
+              icon: const Icon(Icons.search),
+              color: Colors.white,
+              onPressed: () {
+                setState(() {
+
+                });
+              },
+            )
           ],
           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
@@ -113,7 +143,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                     setState(() {
                       menuName = "Konuşmalar";
                       selectedScreen = 0;
-                      screen = userChat();
+                      screen = userChatStream;
                     });
                   }
                   Navigator.pop(context);
@@ -126,7 +156,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                     setState(() {
                       menuName = "Kitaplarım";
                       selectedScreen = 1;
-                      screen = myItems();
+                      screen = myItemsStream;
                     });
                   }
                   Navigator.pop(context);
@@ -139,7 +169,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                     setState(() {
                       menuName = "Tüm Kitaplar";
                       selectedScreen = 2;
-                      screen = allItems();
+                      screen = allItemsStream;
                     });
                   }
                   Navigator.pop(context);

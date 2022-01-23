@@ -45,6 +45,7 @@ Widget sendMessageArea(BuildContext context, String toUserId) {
             //messages.add(message);
             Auth().sendMessage(message.getDataMap());
             messageText.text = "";
+            //Auth().updateUserMessageDate(toUserId, message.text);
           },
         ),
       ],
