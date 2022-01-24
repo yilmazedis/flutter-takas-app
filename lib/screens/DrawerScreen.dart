@@ -83,9 +83,67 @@ class _DrawerScreenState extends State<DrawerScreen>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // Do something here
-        Auth().signOut();
-        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+
+
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title:
+                const Text('Çıkış Yapmak istiyor musunuz!'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const ListTile(
+                        leading: Icon(
+                            Icons.clear),
+                        title: Text("Çıkış yap"),
+                      ),
+
+                      MaterialButton(
+                        minWidth: double.infinity,
+                        height: 60,
+                        onPressed: () {
+                          // Do something here
+                          Auth().signOut();
+                          Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+                        },
+                        shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                                color: Colors.black
+                            ),
+                            borderRadius: BorderRadius.circular(50)
+                        ),
+                        child: const Text("Tamam", style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18
+                        ),),
+                      ),
+                      const SizedBox(height: 20,),
+
+                      MaterialButton(
+                        minWidth: double.infinity,
+                        height: 60,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                                color: Colors.black
+                            ),
+                            borderRadius: BorderRadius.circular(50)
+                        ),
+                        child: const Text("İptal", style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18
+                        ),),
+                      ),
+
+                    ],
+                  ),
+                ),
+              );
+            });
         return false;
       },
       child: Scaffold(
