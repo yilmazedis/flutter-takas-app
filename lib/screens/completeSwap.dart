@@ -30,6 +30,9 @@ class _CompleteSwapState extends State<CompleteSwap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Kitap değişimini yap"),
+      ),
       body: SafeArea(
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
