@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:takas_app/Utils/common.dart';
 import 'package:takas_app/models/item.dart';
 
 import '../auth.dart';
@@ -29,6 +30,9 @@ class _SwapItemState extends State<SwapItem> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Kitap Takası Yap"),
+      ),
       body: SafeArea(
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
@@ -40,13 +44,34 @@ class _SwapItemState extends State<SwapItem> {
             if (!snapshot.hasData) {
               return Container();
             }
-
             if (snapshot.hasError) {
               return Text('Something went wrong');
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Text("Loading");
+            }
+
+            if (snapshot.data!.docs.isEmpty) {
+              return Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 100),
+                  child: Column(
+                    children: const <Widget>[
+                      Text(
+                        "Ekli kitabınız, lütfen kitap ekleyiniz! ",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                        ),
+                        // textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+
             }
 
             return ListView(
