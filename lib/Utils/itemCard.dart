@@ -14,7 +14,6 @@ class ItemCard extends StatefulWidget {
 }
 
 class _ItemCardState extends State<ItemCard> {
-
   Widget _sizedContainer(Widget child) {
     return SizedBox(
       width: 100.0,

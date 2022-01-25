@@ -199,6 +199,12 @@ class Auth {
               .then((value) => print("Desired own request"))
               .catchError((error) => print("Failed to Desired own request: $error"));
         }
+
+        // also delete image from storage. desired and own
+        FirebaseStorage storage =
+        FirebaseStorage.instanceFor(bucket: 'gs://takas-e8b2b.appspot.com/');
+        storage.refFromURL(data["imageUrl"]).delete();
+
       } else {
         List getR = data["getRequest"];
 

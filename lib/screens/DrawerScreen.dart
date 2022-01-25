@@ -108,6 +108,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                           Auth().signOut();
                           Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
                         },
+                        color: Colors.red,
                         shape: RoundedRectangleBorder(
                             side: const BorderSide(
                                 color: Colors.black
