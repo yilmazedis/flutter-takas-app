@@ -72,9 +72,37 @@ myItems() {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ListTile(
-                          trailing: const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            tooltip: 'Delete Item',
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text(
+                                          'Kitap Silme'),
+                                      content: SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            const ListTile(
+                                              leading: Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ),
+                                              title: Text("Kitabı gerçekten silmek istiyor musunuz?"),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            makeButton("Sil", () {
+                                              Auth().deleteItem(document.id);
+                                              Navigator.pop(context);
+                                            }),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  });
+                            },
                           ),
                           title: Text(item.name),
                           subtitle: Text(

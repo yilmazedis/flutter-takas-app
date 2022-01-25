@@ -179,6 +179,55 @@ class Auth {
         .catchError((error) => print("Failed to sesired swap request: $error"));
   }
 
+  Future<void> deleteItem(itemId) async {
+    QuerySnapshot snap = await db.collection('items').get();
+
+    snap.docs.forEach((document) {
+
+      Map<String, dynamic> data =
+      document.data()! as Map<String, dynamic>;
+
+      // if income id's desired or own, make empty string all related items' send request.
+      if (document.id == itemId) {
+        for (String el in data["getRequest"]) {
+          db
+              .collection('items')
+              .doc(el)
+              .update({'sendRequest': ""})
+              .then((value) => print("Desired own request"))
+              .catchError((error) => print("Failed to Desired own request: $error"));
+        }
+
+        // also delete image from storage. desired and own
+        FirebaseStorage storage =
+        FirebaseStorage.instanceFor(bucket: 'gs://takas-e8b2b.appspot.com/');
+        storage.refFromURL(data["imageUrl"]).delete();
+
+      } else {
+        List getR = data["getRequest"];
+
+        // if income id's getRequest contains desired, delete.
+        if (getR.contains(itemId)) {
+          db
+              .collection('items')
+              .doc(document.id)
+              .update({'getRequest': FieldValue.arrayRemove([itemId])})
+              .then((value) => print("Desired swap request"))
+              .catchError((error) => print("Failed to sesired swap request: $error"));
+        }
+      }
+    });
+
+
+    // delete item after swap
+    db
+        .collection('items')
+        .doc(itemId)
+        .delete()
+        .then((value) => print("Deleted desired item"))
+        .catchError((error) => print("Failed to deleted desired item: $error"));
+  }
+
   Future<void> deleteAfterSwapComplete(desired, own) async {
     // Call the user's CollectionReference to add a new user
 
