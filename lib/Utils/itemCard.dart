@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:takas_app/models/item.dart';
-import 'package:takas_app/screens/swapItemScreen.dart';
+import 'package:takas_app/screens/itemScreens/swapItemScreen.dart';
 
 class ItemCard extends StatefulWidget {
   ItemCard({Key? key, required this.data, required this.docId}) : super(key: key);

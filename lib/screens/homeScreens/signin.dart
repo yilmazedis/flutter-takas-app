@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:takas_app/auth.dart';
-import 'package:takas_app/itemScreen.dart';
-
-import '../Utils/common.dart';
+import '../../Utils/common.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:takas_app/auth.dart';
 import 'package:takas_app/models/item.dart';
 
-import 'Constants.dart';
-import 'itemCard.dart';
+import '../../../Utils/Constants.dart';
+import '../../../Utils/itemCard.dart';
 
 allItems() {
   return StreamBuilder<QuerySnapshot>(

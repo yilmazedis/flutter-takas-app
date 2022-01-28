@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:takas_app/Utils/common.dart';
 import 'package:takas_app/models/item.dart';
 
-import '../auth.dart';
+import '../../auth.dart';
 
 class SwapItem extends StatefulWidget {
   SwapItem({Key? key, this.docId}) : super(key: key);

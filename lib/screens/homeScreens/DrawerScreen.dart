@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:takas_app/Utils/AddItemDialog.dart';
-import 'package:takas_app/Utils/AllItems.dart';
-import 'package:takas_app/Utils/MyItems.dart';
-import 'package:takas_app/Utils/userChat.dart';
+import 'package:takas_app/screens/chatScreens/activeChat.dart';
+import 'package:takas_app/screens/itemScreens/subScreens/AllItems.dart';
+import 'package:takas_app/screens/itemScreens/subScreens/MyItems.dart';
+import 'package:takas_app/screens/chatScreens/allUsers.dart';
 import 'package:takas_app/auth.dart';
 
 // command to run flutter web:   flutter run -d chrome --web-renderer html
@@ -39,7 +40,9 @@ class _DrawerScreenState extends State<DrawerScreen>
     //   // }
     // });
 
-    screen = userChatStream;
+    Auth().fetchMe();
+
+    screen = allUsersStream;
   }
 
   @override
@@ -73,7 +76,8 @@ class _DrawerScreenState extends State<DrawerScreen>
 
   Widget myItemsStream = myItems();
   Widget allItemsStream = allItems();
-  Widget userChatStream = userChat();
+  Widget allUsersStream = allUsers();
+  Widget activeChatStream = activeChat();
 
   int selectedScreen = 0;
   String menuName = "Konuşmalar";
@@ -158,7 +162,7 @@ class _DrawerScreenState extends State<DrawerScreen>
             ),
           ),
           actions: <Widget>[
-              selectedScreen == 1 ? IconButton(
+              selectedScreen == 2 ? IconButton(
               icon: const Icon(Icons.add),
               color: Colors.white,
               onPressed: () {
@@ -196,13 +200,26 @@ class _DrawerScreenState extends State<DrawerScreen>
                 child: Text("Kitap Dönüşüm"),
               ),
               ListTile(
-                title: const Text("Konuşmalar"),
+                title: const Text("Kullanıcılar"),
                 onTap: () {
                   if (selectedScreen != 0) {
                     setState(() {
-                      menuName = "Konuşmalar";
+                      menuName = "Kullanıcılar";
                       selectedScreen = 0;
-                      screen = userChatStream;
+                      screen = allUsersStream;
+                    });
+                  }
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text("Konuşmalar"),
+                onTap: () {
+                  if (selectedScreen != 1) {
+                    setState(() {
+                      menuName = "Konuşmalar";
+                      selectedScreen = 1;
+                      screen = activeChatStream;
                     });
                   }
                   Navigator.pop(context);
@@ -211,10 +228,10 @@ class _DrawerScreenState extends State<DrawerScreen>
               ListTile(
                 title: const Text("Kitaplarım"),
                 onTap: () {
-                  if (selectedScreen != 1) {
+                  if (selectedScreen != 2) {
                     setState(() {
                       menuName = "Kitaplarım";
-                      selectedScreen = 1;
+                      selectedScreen = 2;
                       screen = myItemsStream;
                     });
                   }
@@ -224,10 +241,10 @@ class _DrawerScreenState extends State<DrawerScreen>
               ListTile(
                 title: const Text("Tüm Kitaplar"),
                 onTap: () {
-                  if (selectedScreen != 2) {
+                  if (selectedScreen != 3) {
                     setState(() {
                       menuName = "Tüm Kitaplar";
-                      selectedScreen = 2;
+                      selectedScreen = 3;
                       screen = allItemsStream;
                     });
                   }

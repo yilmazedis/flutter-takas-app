@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:takas_app/screens/signin.dart';
-import 'package:takas_app/screens/signup.dart';
+import 'package:takas_app/screens/homeScreens/signin.dart';
+import 'package:takas_app/screens/homeScreens/signup.dart';
 
-import '../auth.dart';
-
-class MainPage extends StatelessWidget {
-  const MainPage({Key? key}) : super(key: key);
+class FirstScreen extends StatelessWidget {
+  const FirstScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

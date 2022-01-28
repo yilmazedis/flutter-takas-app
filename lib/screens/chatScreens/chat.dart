@@ -2,17 +2,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:takas_app/Utils/charBubble.dart';
+import 'package:takas_app/Utils/chatBubble.dart';
 import 'package:takas_app/Utils/sendMessage.dart';
 import 'package:takas_app/models/message.dart';
 import 'package:takas_app/models/user.dart';
 
-import '../auth.dart';
+import '../../auth.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key, required this.userData}) : super(key: key);
+  const ChatScreen({Key? key,
+    required this.name,
+    required this.id,
+    required this.isOnline,
+    required this.imageUrl}) : super(key: key);
 
-  final UserData userData;
+  final String name;
+  final String id;
+  final bool isOnline;
+  final String imageUrl;
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -32,13 +39,13 @@ class _ChatScreenState extends State<ChatScreen> {
           text: TextSpan(
             children: [
               TextSpan(
-                  text: widget.userData.name,
+                  text: widget.name,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
                   )),
               const TextSpan(text: '\n'),
-              widget.userData.isOnline
+              widget.isOnline
                   ? const TextSpan(
                       text: "Online",
                       style: TextStyle(
@@ -71,15 +78,15 @@ class _ChatScreenState extends State<ChatScreen> {
               stream: FirebaseFirestore.instance
                   .collection('messages')
                   .where("toFromUser", whereIn: [ // index is used to use both where and orderBy.
-                    {"to": widget.userData.id, "from": Auth().currentUserId()},
-                    {"to": Auth().currentUserId(), "from": widget.userData.id}
+                    {"to": widget.id, "from": Auth().currentUserId()},
+                    {"to": Auth().currentUserId(), "from": widget.id}
                   ])
                   .orderBy('time')
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
-                  print(widget.userData.id);
+                  print(widget.id);
                   return const Text('Something went wrong');
                 }
 
@@ -109,7 +116,7 @@ class _ChatScreenState extends State<ChatScreen> {
               },
             ),
           ),
-          sendMessageArea(context, widget.userData.id),
+          sendMessageArea(context, widget.id, widget.name, widget.imageUrl, widget.isOnline),
         ],
       ),
     );

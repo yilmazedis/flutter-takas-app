@@ -4,44 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:takas_app/models/user.dart';
-import 'package:takas_app/screens/chat.dart';
-import 'package:intl/intl.dart';
+import 'package:takas_app/screens/chatScreens/chat.dart';
+import '../../auth.dart';
+import '../../Utils/addAvatar.dart';
 
-import '../auth.dart';
-import 'addAvatar.dart';
-
-Future<String> fetchUserOrder(id) async {
-  return await Auth().latestMessage[id];
-}
-
-String readTimestamp(int timestamp) {
-  var now = DateTime.now();
-  var format = DateFormat('HH:mm a');
-  var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-  var diff = now.difference(date);
-  var time = '';
-
-  if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
-    time = format.format(date);
-  } else if (diff.inDays > 0 && diff.inDays < 7) {
-    if (diff.inDays == 1) {
-      time = diff.inDays.toString() + ' DAY AGO';
-    } else {
-      time = diff.inDays.toString() + ' DAYS AGO';
-    }
-  } else {
-    if (diff.inDays == 7) {
-      time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
-    } else {
-
-      time = (diff.inDays / 7).floor().toString() + ' WEEKS AGO';
-    }
-  }
-
-  return time;
-}
-
-userChat() {
+allUsers() {
 
   return StreamBuilder<QuerySnapshot>(
     stream: FirebaseFirestore.instance.collection('users').where(
@@ -70,19 +37,14 @@ userChat() {
 
           var imagePath = data["imageUrl"];
 
-          //print("imagePath $imagePath");
-          //
-          // DateTime dt = (data['currentMessage']['time'] as Timestamp).toDate();
-          // var d24 = DateFormat('dd/MM/yyyy, HH:mm').format(dt);
-
-
-
-
           return GestureDetector(
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => ChatScreen(userData: userData,),
+                builder: (_) => ChatScreen(id: userData.id,
+                  name: userData.name,
+                  isOnline: userData.isOnline,
+                  imageUrl: userData.imageUrl),
               ),
             ),
             child: ListTile(
@@ -104,10 +66,6 @@ userChat() {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(data['name']),
-                            const SizedBox(width: 50),
-
-                            //Text(data['currentMessage']["text"]),
-
                             const SizedBox(width: 50),
                             Text(data['isOnline'] == true ? "Online" : "Offline"),
                           ],

@@ -5,9 +5,10 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:takas_app/screens/DrawerScreen.dart';
+import 'package:takas_app/screens/homeScreens/DrawerScreen.dart';
 
 import 'main.dart';
+import 'models/chatMenu.dart';
 import 'models/item.dart';
 import 'models/message.dart';
 import 'models/user.dart';
@@ -26,6 +27,7 @@ class Auth {
   FirebaseFirestore db = FirebaseFirestore.instance;
 
   List<UserData> users = [];
+  UserData me = UserData(id: "", name: "", email: "", imageUrl: "", isOnline: false);
   Map<String, dynamic> latestMessage = {};
 
   Future<String> downloadUrl(String name) async {
@@ -111,21 +113,42 @@ class Auth {
         .catchError((error) => print("Failed to add user: $error"));
   }
 
-  Future<void> updateUserMessageDate(friendId, text) async {
+  Future<void> updateUserMessageDate(friendId, text, name, imageUrl, isOnline) async {
     // Call the user's CollectionReference to add a new user
-        db
+
+    ChatMenu chatMenuFriend =
+        ChatMenu(time: DateTime.now(),
+            text: text,
+            name: name,
+            imageUrl: imageUrl,
+            isOnline: isOnline,
+        );
+
+    ChatMenu chatMenuMe =
+    ChatMenu(time: DateTime.now(),
+      text: text,
+      name: me.name,
+      imageUrl: me.imageUrl,
+      isOnline: me.isOnline,
+    );
+
+    db
         .collection('users')
         .doc(friendId)
-          .update({'currentMessage': {"text": text, "time": DateTime.now()}})
-        .then((value) => print("Updated User messageDate"))
-        .catchError((error) => print("Failed to updated user messageDate: $error"));
+        .collection("chatMenu")
+        .doc(currentUserId())
+        .set(chatMenuMe.getDataMap())
+        .then((value) => print("Updated chatMenu"))
+        .catchError((error) => print("Failed to updated chatMenu: $error"));
 
-        db
-            .collection('users')
-            .doc(currentUserId())
-            .update({'currentMessage': {"text": text, "time": DateTime.now()}})
-            .then((value) => print("Updated User messageDate"))
-            .catchError((error) => print("Failed to updated user messageDate: $error"));
+    db
+        .collection('users')
+        .doc(currentUserId())
+        .collection("chatMenu")
+        .doc(friendId)
+        .set(chatMenuFriend.getDataMap())
+        .then((value) => print("Updated chatMenu"))
+        .catchError((error) => print("Failed to updated chatMenu: $error"));
   }
 
   Future<void> updateUserStatus(bool isOnline) async {
@@ -161,12 +184,13 @@ class Auth {
   }
 
   Future<void> cancelSwapRequest(docId, desired) async {
-
     // removed desired from getRequest content
     db
         .collection('items')
         .doc(desired)
-        .update({'getRequest': FieldValue.arrayRemove([docId])})
+        .update({
+          'getRequest': FieldValue.arrayRemove([docId])
+        })
         .then((value) => print("Desired swap request"))
         .catchError((error) => print("Failed to desired swap request: $error"));
 
@@ -183,9 +207,7 @@ class Auth {
     QuerySnapshot snap = await db.collection('items').get();
 
     snap.docs.forEach((document) {
-
-      Map<String, dynamic> data =
-      document.data()! as Map<String, dynamic>;
+      Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
       // if income id's desired or own, make empty string all related items' send request.
       if (document.id == itemId) {
@@ -195,14 +217,14 @@ class Auth {
               .doc(el)
               .update({'sendRequest': ""})
               .then((value) => print("Desired own request"))
-              .catchError((error) => print("Failed to Desired own request: $error"));
+              .catchError(
+                  (error) => print("Failed to Desired own request: $error"));
         }
 
         // also delete image from storage. desired and own
-        FirebaseStorage storage =
-        FirebaseStorage.instanceFor(bucket: 'gs://takas-e8b2b.appspot.com/');
+        FirebaseStorage storage = FirebaseStorage.instanceFor(
+            bucket: 'gs://takas-e8b2b.appspot.com/');
         storage.refFromURL(data["imageUrl"]).delete();
-
       } else {
         List getR = data["getRequest"];
 
@@ -211,13 +233,15 @@ class Auth {
           db
               .collection('items')
               .doc(document.id)
-              .update({'getRequest': FieldValue.arrayRemove([itemId])})
+              .update({
+                'getRequest': FieldValue.arrayRemove([itemId])
+              })
               .then((value) => print("Desired swap request"))
-              .catchError((error) => print("Failed to sesired swap request: $error"));
+              .catchError(
+                  (error) => print("Failed to sesired swap request: $error"));
         }
       }
     });
-
 
     // delete item after swap
     db
@@ -234,9 +258,7 @@ class Auth {
     QuerySnapshot snap = await db.collection('items').get();
 
     snap.docs.forEach((document) {
-
-      Map<String, dynamic> data =
-      document.data()! as Map<String, dynamic>;
+      Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
       // if income id's desired or own, make empty string all related items' send request.
       if (document.id == desired || document.id == own) {
@@ -246,14 +268,14 @@ class Auth {
               .doc(el)
               .update({'sendRequest': ""})
               .then((value) => print("Desired own request"))
-              .catchError((error) => print("Failed to Desired own request: $error"));
+              .catchError(
+                  (error) => print("Failed to Desired own request: $error"));
         }
 
         // also delete image from storage. desired and own
-        FirebaseStorage storage =
-        FirebaseStorage.instanceFor(bucket: 'gs://takas-e8b2b.appspot.com/');
+        FirebaseStorage storage = FirebaseStorage.instanceFor(
+            bucket: 'gs://takas-e8b2b.appspot.com/');
         storage.refFromURL(data["imageUrl"]).delete();
-
       } else {
         List getR = data["getRequest"];
 
@@ -262,9 +284,12 @@ class Auth {
           db
               .collection('items')
               .doc(document.id)
-              .update({'getRequest': FieldValue.arrayRemove([desired])})
+              .update({
+                'getRequest': FieldValue.arrayRemove([desired])
+              })
               .then((value) => print("Desired swap request"))
-              .catchError((error) => print("Failed to sesired swap request: $error"));
+              .catchError(
+                  (error) => print("Failed to sesired swap request: $error"));
         }
 
         // if income id's getRequest contains own, delete.
@@ -272,13 +297,15 @@ class Auth {
           db
               .collection('items')
               .doc(document.id)
-              .update({'getRequest': FieldValue.arrayRemove([own])})
+              .update({
+                'getRequest': FieldValue.arrayRemove([own])
+              })
               .then((value) => print("Desired swap request"))
-              .catchError((error) => print("Failed to desired swap request: $error"));
+              .catchError(
+                  (error) => print("Failed to desired swap request: $error"));
         }
       }
     });
-
 
     // delete after swap
     db
@@ -301,7 +328,9 @@ class Auth {
     db
         .collection('items')
         .doc(desired)
-        .update({'getRequest': FieldValue.arrayUnion([own])})
+        .update({
+          'getRequest': FieldValue.arrayUnion([own])
+        })
         .then((value) => print("Desired swap request"))
         .catchError((error) => print("Failed to sesired swap request: $error"));
 
@@ -322,23 +351,35 @@ class Auth {
         .catchError((error) => print("Failed to add user: $error"));
   }
 
-  Future<void> fetchUser() async {
+  Future<void> fetchMe() async {
+      db
+        .collection('users')
+        .doc(currentUserId())
+        .get().then((data) {
+      me = UserData(
+          id: data["id"],
+          name: data["name"],
+          email: data["email"],
+          imageUrl: data["imageUrl"],
+          isOnline: data["isOnline"]);
+    });
+  }
 
-  print("enter fetch");
+  Future<void> fetchUser() async {
+    print("enter fetch");
 
     // Call the user's CollectionReference to add a new user
-    db.collection('users').where(
-        "id", isNotEqualTo: Auth().currentUserId()
-    ).
-    snapshots().listen((event) {
-
+    db
+        .collection('users')
+        .where("id", isNotEqualTo: Auth().currentUserId())
+        .snapshots()
+        .listen((event) {
       for (var docs in event.docChanges) {
         // Do something with change
 
         final doc = docs.doc;
 
         if (docs.type != DocumentChangeType.removed) {
-
           fetchLastMessage(doc);
 
           print(doc["name"]);
@@ -356,38 +397,37 @@ class Auth {
   }
 
   Future<void> fetchLastMessage(docUser) async {
-      db.collection('messages')
-        .where("toFromUser", isEqualTo: {"to": Auth().currentUserId(), "from": docUser["id"]})
+    db
+        .collection('messages')
+        .where("toFromUser",
+            isEqualTo: {"to": Auth().currentUserId(), "from": docUser["id"]})
         .orderBy("time", descending: true)
         .limit(1)
         .snapshots()
         .listen((event) {
-
           print("Triggered message toFromUser");
 
-      for (var docs in event.docChanges) {
-        // Do something with change
+          for (var docs in event.docChanges) {
+            // Do something with change
 
-        final doc = docs.doc;
+            final doc = docs.doc;
 
-        if (docs.type != DocumentChangeType.removed) {
+            if (docs.type != DocumentChangeType.removed) {
+              print(doc["text"]);
 
-          print(doc["text"]);
+              //latestMessage[friendId] = doc["text"];
 
-          //latestMessage[friendId] = doc["text"];
+              //docUser["latestMessage"] = doc["text"];
 
-          //docUser["latestMessage"] = doc["text"];
+              //phobiasStream.add(docUser);
 
-          //phobiasStream.add(docUser);
-
-          print(latestMessage.length);
-
-        } else {
-          print(doc["text"] + " is removed");
-          //latestMessage.re
-        }
-      }
-    });
+              print(latestMessage.length);
+            } else {
+              print(doc["text"] + " is removed");
+              //latestMessage.re
+            }
+          }
+        });
   }
 
   // TODO: do email verification

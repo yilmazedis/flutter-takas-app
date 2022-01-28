@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:takas_app/models/item.dart';
 
-import '../auth.dart';
+import '../../auth.dart';
 
 class CompleteSwap extends StatefulWidget {
   CompleteSwap({Key? key, this.itemList, this.desired}) : super(key: key);

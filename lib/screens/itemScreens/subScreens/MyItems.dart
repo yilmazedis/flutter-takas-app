@@ -4,11 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:takas_app/Utils/cancelRequestDialog.dart';
 import 'package:takas_app/models/item.dart';
-import 'package:takas_app/screens/completeSwap.dart';
+import 'package:takas_app/screens/itemScreens/completeSwap.dart';
 
-import '../auth.dart';
-import 'common.dart';
-import 'itemCard.dart';
+import '../../../auth.dart';
+import '../../../Utils/common.dart';
+import '../../../Utils/itemCard.dart';
 
 myItems() {
   Widget _sizedContainer(Widget child) {

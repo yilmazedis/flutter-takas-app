@@ -4,7 +4,7 @@ import 'package:takas_app/models/message.dart';
 
 import '../auth.dart';
 
-Widget sendMessageArea(BuildContext context, String toUserId) {
+Widget sendMessageArea(BuildContext context, String toUserId, String name, imageUrl, isOnline) {
   final messageText = TextEditingController();
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -45,7 +45,8 @@ Widget sendMessageArea(BuildContext context, String toUserId) {
             //messages.add(message);
             Auth().sendMessage(message.getDataMap());
             messageText.text = "";
-            //Auth().updateUserMessageDate(toUserId, message.text);
+
+            Auth().updateUserMessageDate(toUserId, message.text, name, imageUrl, isOnline);
           },
         ),
       ],
