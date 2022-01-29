@@ -27,7 +27,8 @@ class Auth {
   FirebaseFirestore db = FirebaseFirestore.instance;
 
   List<UserData> users = [];
-  UserData me = UserData(id: "", name: "", email: "", imageUrl: "", isOnline: false);
+  UserData me =
+      UserData(id: "", name: "", email: "", imageUrl: "", isOnline: false);
   Map<String, dynamic> latestMessage = {};
 
   Future<String> downloadUrl(String name) async {
@@ -113,23 +114,39 @@ class Auth {
         .catchError((error) => print("Failed to add user: $error"));
   }
 
-  Future<void> updateUserMessageDate(friendId, text, name, imageUrl, isOnline) async {
+  Future<void> updateUserChatMenuReadMessage(friendId) async {
+    db
+        .collection('users')
+        .doc(currentUserId())
+        .collection("chatMenu")
+        .doc(friendId)
+        .update({"isRead": true})
+        .then((value) => print("Updated chatMenu"))
+        .catchError((error) => print("Failed to updated chatMenu: $error"));
+  }
+
+  Future<void> updateUserMessageDate(
+      friendId, text, name, imageUrl, isOnline) async {
     // Call the user's CollectionReference to add a new user
 
-    ChatMenu chatMenuFriend =
-        ChatMenu(time: DateTime.now(),
-            text: text,
-            name: name,
-            imageUrl: imageUrl,
-            isOnline: isOnline,
-        );
+    final time = DateTime.now();
 
-    ChatMenu chatMenuMe =
-    ChatMenu(time: DateTime.now(),
+    ChatMenu chatMenuMe = ChatMenu(
+      time: time,
+      text: text,
+      name: name,
+      imageUrl: imageUrl,
+      isOnline: isOnline,
+      isRead: true,
+    );
+
+    ChatMenu chatMenuFriend = ChatMenu(
+      time: time,
       text: text,
       name: me.name,
       imageUrl: me.imageUrl,
       isOnline: me.isOnline,
+      isRead: false,
     );
 
     db
@@ -137,7 +154,7 @@ class Auth {
         .doc(friendId)
         .collection("chatMenu")
         .doc(currentUserId())
-        .set(chatMenuMe.getDataMap())
+        .set(chatMenuFriend.getDataMap(), SetOptions(merge: true))
         .then((value) => print("Updated chatMenu"))
         .catchError((error) => print("Failed to updated chatMenu: $error"));
 
@@ -146,7 +163,7 @@ class Auth {
         .doc(currentUserId())
         .collection("chatMenu")
         .doc(friendId)
-        .set(chatMenuFriend.getDataMap())
+        .set(chatMenuMe.getDataMap(), SetOptions(merge: true))
         .then((value) => print("Updated chatMenu"))
         .catchError((error) => print("Failed to updated chatMenu: $error"));
   }
@@ -352,10 +369,7 @@ class Auth {
   }
 
   Future<void> fetchMe() async {
-      db
-        .collection('users')
-        .doc(currentUserId())
-        .get().then((data) {
+    db.collection('users').doc(currentUserId()).get().then((data) {
       me = UserData(
           id: data["id"],
           name: data["name"],

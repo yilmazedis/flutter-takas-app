@@ -26,6 +26,28 @@ activeChat() {
         return Text("yükleniyor");
       }
 
+      if (snapshot.data!.docs.isEmpty) {
+        return Center(
+          child: Container(
+            margin: const EdgeInsets.only(top: 100),
+            child: Column(
+              children: const <Widget>[
+                Text(
+                  "Aktif konuşma yok",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25,
+                  ),
+                  // textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        );
+
+      }
+
       return ListView(
         children: snapshot.data!.docs.map((DocumentSnapshot document) {
           Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
@@ -36,6 +58,7 @@ activeChat() {
               time: (data['time'] as Timestamp).toDate(),
               imageUrl: data["imageUrl"],
               isOnline: data["isOnline"],
+              isRead: data["isRead"],
           );
 
           //var imagePath = data["imageUrl"];
@@ -63,6 +86,7 @@ activeChat() {
                     addAvatar(data["imageUrl"]),
                     Expanded(
                       child: Card(
+                        color: chatMenu.isRead ? null : Colors.green,
                         semanticContainer: true,
                         clipBehavior: Clip.antiAlias,
                         shape: RoundedRectangleBorder(

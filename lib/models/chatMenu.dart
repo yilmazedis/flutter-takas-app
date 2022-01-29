@@ -6,6 +6,7 @@ class ChatMenu {
   final String name;
   final String imageUrl;
   final bool isOnline;
+  final bool isRead;
 
 
   ChatMenu({
@@ -14,6 +15,7 @@ class ChatMenu {
     required this.name,
     required this.imageUrl,
     required this.isOnline,
+    required this.isRead,
   });
 
   Map<String, dynamic> getDataMap() {
@@ -23,6 +25,7 @@ class ChatMenu {
       "name": name,
       "imageUrl": imageUrl,
       "isOnline": isOnline,
+      "isRead": isRead,
     };
   }
 }

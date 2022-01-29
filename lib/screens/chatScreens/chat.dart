@@ -27,6 +27,21 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   List<Message> messages = [];
+  final ScrollController _sc = ScrollController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Auth().updateUserChatMenuReadMessage(widget.id);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    Auth().updateUserChatMenuReadMessage(widget.id);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +100,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
+
+                // to scroll down
+                WidgetsBinding.instance?.addPostFrameCallback((_) => {_sc.jumpTo(_sc.position.maxScrollExtent)});
+
                 if (snapshot.hasError) {
                   print(widget.id);
                   return const Text('Something went wrong');
@@ -95,6 +114,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
                 // TODO: move list to bottom when new message is sent
                 return ListView(
+                  controller: _sc,
                   padding: const EdgeInsets.all(20),
                   children:
                       snapshot.data!.docs.map((DocumentSnapshot document) {
