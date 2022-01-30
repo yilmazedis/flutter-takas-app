@@ -28,4 +28,8 @@ class ChatMenu {
       "isRead": isRead,
     };
   }
+
+  List<String> getKeys() { //TODO: check StreamBuilders with keys
+    return ["time", "text", "name", "imageUrl", "isOnline", "isRead"];
+  }
 }
