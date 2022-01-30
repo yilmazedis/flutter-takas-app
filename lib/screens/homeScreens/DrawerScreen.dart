@@ -8,6 +8,7 @@ import 'package:takas_app/screens/itemScreens/subScreens/AllItems.dart';
 import 'package:takas_app/screens/itemScreens/subScreens/MyItems.dart';
 import 'package:takas_app/screens/chatScreens/allUsers.dart';
 import 'package:takas_app/auth.dart';
+import 'package:takas_app/screens/profileScreens/profileScreen.dart';
 
 // command to run flutter web:   flutter run -d chrome --web-renderer html
 // command to build flutter web for release: flutter build web --web-renderer html --release
@@ -23,9 +24,6 @@ class DrawerScreen extends StatefulWidget {
 
 class _DrawerScreenState extends State<DrawerScreen>
     with WidgetsBindingObserver {
-
-
-
   @override
   void initState() {
     super.initState();
@@ -80,52 +78,47 @@ class _DrawerScreenState extends State<DrawerScreen>
   Widget activeChatStream = activeChat();
 
   int selectedScreen = 0;
-  String menuName = "Konuşmalar";
+  String menuName = "Kullanıcılar";
   late Widget screen;
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-
-
         showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
-                title:
-                const Text('Çıkış Yapmak istiyor musunuz!'),
+                title: const Text('Çıkış Yapmak istiyor musunuz!'),
                 content: SingleChildScrollView(
                   child: Column(
                     children: [
                       const ListTile(
-                        leading: Icon(
-                            Icons.clear),
+                        leading: Icon(Icons.clear),
                         title: Text("Çıkış yap"),
                       ),
-
                       MaterialButton(
                         minWidth: double.infinity,
                         height: 60,
                         onPressed: () {
                           // Do something here
                           Auth().signOut();
-                          Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+                          Navigator.of(context)
+                              .pushNamedAndRemoveUntil('/', (route) => false);
                         },
                         color: Colors.red,
                         shape: RoundedRectangleBorder(
-                            side: const BorderSide(
-                                color: Colors.black
-                            ),
-                            borderRadius: BorderRadius.circular(50)
+                            side: const BorderSide(color: Colors.black),
+                            borderRadius: BorderRadius.circular(50)),
+                        child: const Text(
+                          "Tamam",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 18),
                         ),
-                        child: const Text("Tamam", style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18
-                        ),),
                       ),
-                      const SizedBox(height: 20,),
-
+                      const SizedBox(
+                        height: 20,
+                      ),
                       MaterialButton(
                         minWidth: double.infinity,
                         height: 60,
@@ -133,17 +126,14 @@ class _DrawerScreenState extends State<DrawerScreen>
                           Navigator.pop(context);
                         },
                         shape: RoundedRectangleBorder(
-                            side: const BorderSide(
-                                color: Colors.black
-                            ),
-                            borderRadius: BorderRadius.circular(50)
+                            side: const BorderSide(color: Colors.black),
+                            borderRadius: BorderRadius.circular(50)),
+                        child: const Text(
+                          "İptal",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 18),
                         ),
-                        child: const Text("İptal", style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18
-                        ),),
                       ),
-
                     ],
                   ),
                 ),
@@ -162,26 +152,25 @@ class _DrawerScreenState extends State<DrawerScreen>
             ),
           ),
           actions: <Widget>[
-              selectedScreen == 2 ? IconButton(
-              icon: const Icon(Icons.add),
-              color: Colors.white,
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (_) {
-                      return AddItemDialog();
-                    });
-              },
-            ):
-            IconButton(
-              icon: const Icon(Icons.search),
-              color: Colors.white,
-              onPressed: () {
-                setState(() {
-
-                });
-              },
-            )
+            selectedScreen == 2
+                ? IconButton(
+                    icon: const Icon(Icons.add),
+                    color: Colors.white,
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (_) {
+                            return AddItemDialog();
+                          });
+                    },
+                  )
+                : IconButton(
+                    icon: const Icon(Icons.search),
+                    color: Colors.white,
+                    onPressed: () {
+                      setState(() {});
+                    },
+                  )
           ],
           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
@@ -193,18 +182,51 @@ class _DrawerScreenState extends State<DrawerScreen>
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
             children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
+              DrawerHeader(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage("images/library.jpg"),
+                  ),
                 ),
-                child: Text("Kitap Dönüşüm"),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Kitap Dönüşüm",
+                      style: TextStyle(color: Colors.white, fontSize: 30),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 20),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ProfileScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Profilim',
+                        style: TextStyle(color: Colors.white, fontSize: 20, decoration: TextDecoration.underline,),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               ListTile(
+                trailing: const Icon(Icons.supervised_user_circle_sharp),
                 title: const Text("Kullanıcılar"),
                 onTap: () {
                   if (selectedScreen != 0) {
                     setState(() {
-                      menuName = "Kullanıcılar";
+                      menuName = "Kullanıcılarr";
                       selectedScreen = 0;
                       screen = allUsersStream;
                     });
@@ -213,6 +235,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                 },
               ),
               ListTile(
+                trailing: const Icon(Icons.chat),
                 title: const Text("Konuşmalar"),
                 onTap: () {
                   if (selectedScreen != 1) {
@@ -226,6 +249,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                 },
               ),
               ListTile(
+                trailing: const Icon(Icons.book),
                 title: const Text("Kitaplarım"),
                 onTap: () {
                   if (selectedScreen != 2) {
@@ -239,6 +263,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                 },
               ),
               ListTile(
+                trailing: const Icon(Icons.library_books),
                 title: const Text("Tüm Kitaplar"),
                 onTap: () {
                   if (selectedScreen != 3) {
@@ -252,6 +277,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                 },
               ),
               ListTile(
+                trailing: const Icon(Icons.logout),
                 title: const Text("Çıkış Yap"),
                 onTap: () {
                   Auth().signOut();

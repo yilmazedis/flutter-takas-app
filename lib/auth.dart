@@ -5,8 +5,10 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:takas_app/Utils/common.dart';
 import 'package:takas_app/screens/homeScreens/DrawerScreen.dart';
 
+import 'Sessions/authExceptionHandler.dart';
 import 'main.dart';
 import 'models/chatMenu.dart';
 import 'models/item.dart';
@@ -479,13 +481,8 @@ class Auth {
 
       return result.user;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
+      throw AuthExceptionHandler.handleException(e);
     }
-    return null;
   }
 
   Future<User?> signUp(name, email, password, url) async {
@@ -503,9 +500,9 @@ class Auth {
 
       return result.user;
     } on FirebaseAuthException catch (e) {
-      print("Could not sign up e=$e");
+
+      throw AuthExceptionHandler.handleException(e);
     }
-    return null;
   }
 
   clearAll() {

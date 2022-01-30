@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:takas_app/Utils/common.dart';
 import 'package:takas_app/models/chatMenu.dart';
 import 'package:takas_app/models/user.dart';
 import 'package:takas_app/screens/chatScreens/chat.dart';
 import '../../auth.dart';
-import '../../Utils/addAvatar.dart';
 import 'package:intl/intl.dart';
 
 activeChat() {
@@ -83,7 +83,7 @@ activeChat() {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
                   children: [
-                    addAvatar(data["imageUrl"]),
+                    buildProfileImage(chatMenu.imageUrl, 50),
                     Expanded(
                       child: Card(
                         color: chatMenu.isRead ? null : Colors.green,

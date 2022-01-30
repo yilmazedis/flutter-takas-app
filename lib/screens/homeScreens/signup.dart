@@ -203,7 +203,9 @@ class _SignupPageState extends State<SignupPage> {
                             print("url: $url");
                             Auth().signUp(name.text, email.text, confirmPassword.text, url)
                                 .then((user) {
-                              authStatus(context, user);
+                              authSuccess(context);
+                            }).catchError((onError) {
+                              authFail(context, onError);
                             });
                           });
                         } else {

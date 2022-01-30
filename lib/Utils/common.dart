@@ -1,16 +1,18 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:takas_app/Sessions/authExceptionHandler.dart';
+import 'package:takas_app/models/user.dart';
 import 'package:takas_app/screens/homeScreens/DrawerScreen.dart';
 import 'package:intl/intl.dart';
 import '../auth.dart';
 
-Future<Widget?> authStatus(BuildContext context, User? user) async {
+Future<Widget?> authSuccess(BuildContext context) async {
   Timer? timer = Timer(const Duration(milliseconds: 3000), (){
     Navigator.of(context, rootNavigator: true).pop();
   });
 
-  if (user != null) {
     showDialog(
         context: context,
         builder: (context) {
@@ -26,20 +28,27 @@ Future<Widget?> authStatus(BuildContext context, User? user) async {
       timer = null;
     });
     print('Logged in successfully.');
-  } else {
+  return null;
+}
+
+Future<Widget?> authFail(BuildContext context, AuthResultStatus status) async {
+  Timer? timer = Timer(const Duration(milliseconds: 3000), (){
+    Navigator.of(context, rootNavigator: true).pop();
+  });
+
+    final message = AuthExceptionHandler.generateExceptionMessage(status);
     showDialog(
         context: context,
         builder: (context) {
-          return const AlertDialog(
-            title: Text('Hatalı Erişim'),
+          return AlertDialog(
+            title: Text(message),
           );
         }).then((value){
       // dispose the timer in case something else has triggered the dismiss.
       timer?.cancel();
       timer = null;
     });
-    print('Error while Login.');
-  }
+    print(message);
   return null;
 }
 
@@ -101,6 +110,17 @@ Widget makeInput({label, userController, obscureText = false, validate = false, 
     ],
   );
 }
+
+Widget buildProfileImage(imageUrl, profileHeight) => CachedNetworkImage(
+  imageUrl: imageUrl,
+  imageBuilder: (context, imageProvider) => CircleAvatar(
+    radius: profileHeight / 2,
+    backgroundColor: Colors.grey.shade800,
+    backgroundImage: imageProvider,
+  ),
+  placeholder: (context, url) => const CircularProgressIndicator(),
+  errorWidget: (context, url, error) => const Icon(Icons.error),
+);
 
 Future<String> fetchUserOrder(id) async {
   return await Auth().latestMessage[id];

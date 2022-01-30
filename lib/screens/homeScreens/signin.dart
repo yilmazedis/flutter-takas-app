@@ -105,7 +105,10 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () {
                           if (validateTextField()) {
                             Auth().signIn(email.text,  password.text).then((user) {
-                              authStatus(context, user);
+                              authSuccess(context);
+                            }).catchError((onError) {
+                              print("sdsdsd");
+                              authFail(context, onError);
                             });
                           }
                         },
