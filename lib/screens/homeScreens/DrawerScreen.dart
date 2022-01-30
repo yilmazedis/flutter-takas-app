@@ -186,7 +186,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage("images/library.jpg"),
+                    image: AssetImage("assets/images/library.jpg"),
                   ),
                 ),
                 child: Column(
@@ -226,7 +226,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                 onTap: () {
                   if (selectedScreen != 0) {
                     setState(() {
-                      menuName = "Kullanıcılarr";
+                      menuName = "Kullanıcılar";
                       selectedScreen = 0;
                       screen = allUsersStream;
                     });

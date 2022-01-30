@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +7,12 @@ import 'package:takas_app/screens/chatScreens/chat.dart';
 import '../../auth.dart';
 
 allUsers() {
-
   return StreamBuilder<QuerySnapshot>(
-    stream: FirebaseFirestore.instance.collection('users').where(
-        "id", isNotEqualTo: Auth().currentUserId()
-    ).snapshots(),
+    stream: FirebaseFirestore.instance
+        .collection('users')
+        .where("id", isNotEqualTo: Auth().currentUserId())
+        .snapshots(),
     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-
       if (snapshot.hasError) {
         return Text('Something went wrong');
       }
@@ -35,8 +32,6 @@ allUsers() {
               imageUrl: data["imageUrl"],
               isOnline: data["isOnline"]);
 
-          var imagePath = data["imageUrl"];
-
           return GestureDetector(
             onTap: () => Navigator.push(
               context,
@@ -47,37 +42,7 @@ allUsers() {
                   imageUrl: userData.imageUrl),
               ),
             ),
-            child: ListTile(
-              title: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Row(
-                  children: [
-                    buildProfileImage(userData.imageUrl, 50),
-                    Expanded(
-                      child: Card(
-                        semanticContainer: true,
-                        clipBehavior: Clip.antiAlias,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        elevation: 5,
-                        margin: const EdgeInsets.all(7),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(data['name']),
-                            const SizedBox(width: 50),
-                            Text(data['isOnline'] == true ? "Online" : "Offline"),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              //subtitle: Text(data['email']),
-
-            ),
+            child: userList(userData.imageUrl, userData.name, "Merhaba de"),
           );
         }).toList(),
       );
@@ -85,63 +50,48 @@ allUsers() {
   );
 }
 
-//
-//
-// return GestureDetector(
-// onTap: () => Navigator.push(
-// context,
-// MaterialPageRoute(
-// builder: (_) => ChatScreen(userData: userData,),
-// ),
-// ),
-// child:
-// Padding(
-// padding: const EdgeInsets.all(8.0),
-// child: Row(
-// children: <Widget>[
-// const Icon(
-// Icons.account_circle,
-// size: 64.0,
-// ),
-// Expanded(
-// child: Padding(
-// padding: const EdgeInsets.all(8.0),
-// child: Column(
-// crossAxisAlignment: CrossAxisAlignment.start,
-// children: <Widget>[
-// Row(
-// mainAxisAlignment:
-// MainAxisAlignment.spaceBetween,
-// children: <Widget>[
-// Text(
-// data['name'],
-// overflow: TextOverflow.ellipsis,
-// style: const TextStyle(
-// fontWeight: FontWeight.w500,
-// fontSize: 18.0),
-// ),
-// Text(
-// d24,
-// overflow: TextOverflow.ellipsis,
-// style: const TextStyle(color: Colors.black45, fontSize: 10),
-// ),
-// ],
-// ),
-// Padding(
-// padding: const EdgeInsets.only(top: 2.0),
-// child: Text(
-// data['currentMessage']["text"],
-// overflow: TextOverflow.ellipsis,
-// style: const TextStyle(
-// color: Colors.black45, fontSize: 16.0),
-// ),
-// )
-// ],
-// ),
-// ),
-// )
-// ],
-// ),
-// ),
-//
-// );
+Widget userList(
+    String url, String name, String message) {
+  return Padding(
+    padding: const EdgeInsets.all(15.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        buildProfileImage(url, 50),
+        const SizedBox(
+          width: 8.0,
+        ),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      name,
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 5.0,
+              ),
+              Row(
+                children: [
+                  Expanded(child: Text(message)),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}

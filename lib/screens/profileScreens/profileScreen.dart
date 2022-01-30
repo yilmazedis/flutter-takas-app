@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: snapshot.data!.docs.map<Widget>((DocumentSnapshot document) {
               Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
-              const coverHeight = 400;
+              const double coverHeight = 400;
               const profileHeight = 144;
               double top = (coverHeight - profileHeight / 2);
               const bottom = profileHeight / 2;
@@ -99,7 +99,7 @@ Widget buildContent(name, title) => Column(
 
 
 
-Widget buildCoverImage(coverHeight) => Container(
+Widget buildCoverImage(double coverHeight) => Container(
       color: Colors.grey,
       child: Image.asset("assets/images/gebze_anadolu_lisesi.jpg",
           width: double.infinity, height: coverHeight, fit: BoxFit.cover),
