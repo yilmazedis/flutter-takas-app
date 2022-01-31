@@ -51,155 +51,160 @@ myItems() {
               getRequest: data["getRequest"],
               sendRequest: data["sendRequest"]);
 
-          return Container(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ClipRRect(
-                    child: _sizedContainer(CachedNetworkImage(
-                  imageUrl: item.imageUrl,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      CircularProgressIndicator(
-                          value: downloadProgress.progress),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                ))),
-                Expanded(
-                  child: Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            tooltip: 'Delete Item',
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: const Text(
-                                          'Kitap Silme'),
-                                      content: SingleChildScrollView(
-                                        child: Column(
-                                          children: [
-                                            const ListTile(
-                                              leading: Icon(
-                                                Icons.delete,
-                                                color: Colors.red,
-                                              ),
-                                              title: Text("Kitabı gerçekten silmek istiyor musunuz?"),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            makeButton("Sil", () {
-                                              Auth().deleteItem(document.id);
-                                              Navigator.pop(context);
-                                            }),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  });
-                            },
-                          ),
-                          title: Text(item.name),
-                          subtitle: Text(
-                            item.feature_1,
-                            style:
-                                TextStyle(color: Colors.black.withOpacity(0.6)),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Text(
-                            item.feature_2,
-                            style:
-                                TextStyle(color: Colors.black.withOpacity(0.6)),
-                          ),
-                        ),
-                        ButtonBar(
-                          alignment: MainAxisAlignment.end,
-                          children: [
-                            item.sendRequest.isNotEmpty
-                                ? TextButton(
-                                    onPressed: () {
-                                      Auth()
-                                          .getRequestedItem(item.sendRequest)
-                                          .then((value) {
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title:
-                                                    const Text('İsteği bırak'),
-                                                content: SingleChildScrollView(
-                                                  child: Column(
-                                                    children: [
-                                                      ListTile(
-                                                        leading: const Icon(
-                                                            Icons.album),
-                                                        title: Text(value.name),
-                                                        subtitle: Text(
-                                                          value.sendRequest,
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black
-                                                                  .withOpacity(
-                                                                      0.6)),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 8),
-                                                      makeButton("Bırak", () {
-                                                        Auth().cancelSwapRequest(
-                                                            document.id,
-                                                            item.sendRequest);
-                                                        Navigator.pop(context);
-                                                      }),
-                                                    ],
-                                                  ),
+          return Padding(
+            padding: const EdgeInsets.only(left: 12, right: 12, top: 8),
+            child: Card(
+              clipBehavior: Clip.antiAlias,
+              child: IntrinsicHeight(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: ClipRRect(
+                          child: _sizedContainer(CachedNetworkImage(
+                            imageUrl: item.imageUrl,
+                            fit: BoxFit.cover,
+                            height: 190,
+                            errorWidget: (context, url, error) => const Icon(Icons.error),
+                          ))),
+                    ),
+                    const SizedBox(width: 12,),
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              tooltip: 'Delete Item',
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text(
+                                            'Kitap Silme'),
+                                        content: SingleChildScrollView(
+                                          child: Column(
+                                            children: [
+                                              const ListTile(
+                                                leading: Icon(
+                                                  Icons.delete,
+                                                  color: Colors.red,
                                                 ),
-                                              );
-                                            });
-
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //     builder: (_) => CancelRequestDialog(item: value, docId: document.id,),
-                                        //   ),
-                                        // );
-                                      });
-                                    },
-                                    child: const Text('Yapılan isteği bırak'),
-                                  )
-                                : Container(),
-                            item.getRequest.isNotEmpty
-                                ? TextButton(
-                                    onPressed: () {
-                                      // Perform some action
-
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => CompleteSwap(
-                                              itemList: item.getRequest,
-                                              desired: document.id),
+                                                title: Text("Kitabı gerçekten silmek istiyor musunuz?"),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              makeButton("Sil", () {
+                                                Auth().deleteItem(document.id);
+                                                Navigator.pop(context);
+                                              }),
+                                            ],
+                                          ),
                                         ),
                                       );
-                                    },
-                                    child: const Text('Takası Tamamla',
-                                        style: TextStyle(
-                                          color: Colors.green,
-                                        )))
-                                : const Text("Gelen istek yok"),
-                          ],
-                        ),
-                      ],
+                                    });
+                              },
+                            ),
+                            title: Text(item.name),
+                            subtitle: Text(
+                              item.feature_1,
+                              style:
+                                  TextStyle(color: Colors.black.withOpacity(0.6)),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              item.feature_2,
+                              style:
+                                  TextStyle(color: Colors.black.withOpacity(0.6)),
+                            ),
+                          ),
+                          ButtonBar(
+                            alignment: MainAxisAlignment.end,
+                            children: [
+                              item.sendRequest.isNotEmpty
+                                  ? TextButton(
+                                      onPressed: () {
+                                        Auth()
+                                            .getRequestedItem(item.sendRequest)
+                                            .then((value) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title:
+                                                      const Text('İsteği bırak'),
+                                                  content: SingleChildScrollView(
+                                                    child: Column(
+                                                      children: [
+                                                        ListTile(
+                                                          leading: const Icon(
+                                                              Icons.album),
+                                                          title: Text(value.name),
+                                                          subtitle: Text(
+                                                            value.sendRequest,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.6)),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(width: 8),
+                                                        makeButton("Bırak", () {
+                                                          Auth().cancelSwapRequest(
+                                                              document.id,
+                                                              item.sendRequest);
+                                                          Navigator.pop(context);
+                                                        }),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              });
+
+                                          // Navigator.push(
+                                          //   context,
+                                          //   MaterialPageRoute(
+                                          //     builder: (_) => CancelRequestDialog(item: value, docId: document.id,),
+                                          //   ),
+                                          // );
+                                        });
+                                      },
+                                      child: const Text('Yapılan isteği bırak'),
+                                    )
+                                  : Container(),
+                              item.getRequest.isNotEmpty
+                                  ? TextButton(
+                                      onPressed: () {
+                                        // Perform some action
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => CompleteSwap(
+                                                itemList: item.getRequest,
+                                                desired: document.id),
+                                          ),
+                                        );
+                                      },
+                                      child: const Text('Takası Tamamla',
+                                          style: TextStyle(
+                                            color: Colors.green,
+                                          )))
+                                  : const Text("Gelen istek yok"),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           );
         }).toList(),

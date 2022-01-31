@@ -14,82 +14,74 @@ class ItemCard extends StatefulWidget {
 }
 
 class _ItemCardState extends State<ItemCard> {
-  Widget _sizedContainer(Widget child) {
-    return SizedBox(
-      width: 100.0,
-      child: Center(child: child),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          ClipRRect(
-              child: _sizedContainer(CachedNetworkImage(
-            imageUrl: widget.data.imageUrl,
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                CircularProgressIndicator(value: downloadProgress.progress),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
-          ))),
-          Expanded(
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    trailing: const Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                    ),
-                    title: Text(widget.data.name),
-                    subtitle: Text(
-                      widget.data.feature_1,
-                      style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                    ),
+    return Padding(
+      padding: const EdgeInsets.only(left: 12, right: 12, top: 8),
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: IntrinsicHeight(
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    height: 190,
+                    imageUrl: widget.data.imageUrl,
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      widget.data.feature_2,
-                      style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                    ),
-                  ),
-                  ButtonBar(
-                    alignment: MainAxisAlignment.end,
-                    children: [
-                      // TextButton(
-                      //   onPressed: () {
-                      //     // Perform some action
-                      //   },
-                      //   child: const Text('Takas'),
-                      // ),
-                      TextButton(
-                        onPressed: () {
-                          // Perform some action
-
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => SwapItem(docId: widget.docId),
-                            ),
-                          );
-                        },
-                        child: const Text('Takas'),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
-            ),
+              const SizedBox(width: 12,),
+              Expanded(
+                flex: 3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListTile(
+                      trailing: const Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                      ),
+                      title: Text(widget.data.name),
+                      subtitle: Text(
+                        widget.data.feature_1,
+                        style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        widget.data.feature_2,
+                        style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                      ),
+                    ),
+                    ButtonBar(
+                      alignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => SwapItem(docId: widget.docId),
+                              ),
+                            );
+                          },
+                          child: const Text('Takas'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -118,7 +118,6 @@ Widget buildProfileImage(imageUrl, profileHeight) => CachedNetworkImage(
     backgroundColor: Colors.grey.shade800,
     backgroundImage: imageProvider,
   ),
-  placeholder: (context, url) => const CircularProgressIndicator(),
   errorWidget: (context, url, error) => const Icon(Icons.error),
 );
 

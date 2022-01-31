@@ -129,7 +129,7 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      //resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
@@ -159,7 +159,7 @@ class _SignupPageState extends State<SignupPage> {
                       fontSize: 30,
                       fontWeight: FontWeight.bold
                   ),),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 10,),
                   Text("Hesap Açın, Bedava", style: TextStyle(
                       fontSize: 15,
                       color: Colors.grey[700]
@@ -177,86 +177,60 @@ class _SignupPageState extends State<SignupPage> {
                   makeInput(label: "Şifre Onayla",
                       userController: confirmPassword,
                       obscureText: true, validate: cPasswordValidate, message: cPasswordMessage),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 3, left: 3),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    border: const Border(
-                      bottom: BorderSide(color: Colors.black),
-                      top: BorderSide(color: Colors.black),
-                      left: BorderSide(color: Colors.black),
-                      right: BorderSide(color: Colors.black),
-                    )
-                ),
-                child: MaterialButton(
-                  minWidth: double.infinity,
-                  height: 60,
-                  onPressed: () {
+                  const SizedBox(height: 50,),
 
-                    if (validateTextField()) {
-                      if (webImage != null) {
-                        if (comparePasswords()) {
-                          var imagePath = email.text + "/profile/" + imageName;
-                          Auth().uploadData(webImage, imagePath, extension).then((url) {
-                            print("url: $url");
-                            Auth().signUp(name.text, email.text, confirmPassword.text, url)
-                                .then((user) {
-                              authSuccess(context);
-                            }).catchError((onError) {
-                              authFail(context, onError);
-                            });
-                          });
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            behavior: SnackBarBehavior.floating,
-                            content: const Text('Şifreniz aynı değil, kontrol ediniz.'),
-                            action: SnackBarAction(
-                              label: 'Tamam',
-                              onPressed: () {
-                                _imgFromGallery();
-                              },
-                            ),
-                          ));
-                        }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          behavior: SnackBarBehavior.floating,
-                          content: const Text('Lütfen profil resmi ekleyiniz'),
-                          action: SnackBarAction(
-                            label: 'Tamam',
-                            onPressed: () {
-                              _imgFromGallery();
-                            },
-                          ),
-                        ));
-                      }
-                    }
-                  },
-                  color: Colors.greenAccent,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50)
-                  ),
-                  child: const Text("Kaydol", style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18
-                  ),),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const <Widget>[
-                  Text("Zaten bir hesabınız var mı?"),
-                  Text(" Giriş Yapın", style: TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 18
-                  ),),
                 ],
               ),
+
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        label: const Text('Kaydol'),
+        icon: const Icon(Icons.thumb_up),
+        backgroundColor: Colors.pink,
+        onPressed: () {
+
+          if (validateTextField()) {
+            if (webImage != null) {
+              if (comparePasswords()) {
+                var imagePath = email.text + "/profile/" + imageName;
+                Auth().uploadData(webImage, imagePath, extension).then((url) {
+                  print("url: $url");
+                  Auth().signUp(name.text, email.text, confirmPassword.text, url)
+                      .then((user) {
+                    authSuccess(context);
+                  }).catchError((onError) {
+                    authFail(context, onError);
+                  });
+                });
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  content: const Text('Şifreniz aynı değil, kontrol ediniz.'),
+                  action: SnackBarAction(
+                    label: 'Tamam',
+                    onPressed: () {
+                      _imgFromGallery();
+                    },
+                  ),
+                ));
+              }
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                behavior: SnackBarBehavior.floating,
+                content: const Text('Lütfen profil resmi ekleyiniz'),
+                action: SnackBarAction(
+                  label: 'Tamam',
+                  onPressed: () {
+                    _imgFromGallery();
+                  },
+                ),
+              ));
+            }
+          }
+        },
       ),
     );
   }
