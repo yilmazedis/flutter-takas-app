@@ -64,7 +64,7 @@ myItems() {
                           child: _sizedContainer(CachedNetworkImage(
                             imageUrl: item.imageUrl,
                             fit: BoxFit.cover,
-                            height: 190,
+                            height: 160,
                             errorWidget: (context, url, error) => const Icon(Icons.error),
                           ))),
                     ),

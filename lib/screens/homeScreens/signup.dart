@@ -25,7 +25,7 @@ class _SignupPageState extends State<SignupPage> {
   _imgFromGallery() async {
 
     var image = await ImagePicker().pickImage(
-        source: ImageSource.gallery);
+        source: ImageSource.gallery, imageQuality: 0, maxHeight: 190);
     var f = await image?.readAsBytes();
 
     setState(() {
@@ -34,7 +34,6 @@ class _SignupPageState extends State<SignupPage> {
       } else {
         _image = i.File((image?.path)!);
       }*/
-
       imageName = image?.name;
       extension = imageName.split('.').last;
       webImage = f;
