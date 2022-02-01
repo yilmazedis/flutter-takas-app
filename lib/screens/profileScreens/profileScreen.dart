@@ -16,6 +16,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      appBar: AppBar(
+          elevation: 8,
+          title: const Text(
+            "Profilim",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
