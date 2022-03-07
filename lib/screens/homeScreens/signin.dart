@@ -108,7 +108,6 @@ class _LoginPageState extends State<LoginPage> {
                               Auth().signIn(email.text,  password.text).then((user) {
                                 authSuccess(context);
                               }).catchError((onError) {
-                                print("sdsdsd");
                                 authFail(context, onError);
                               });
                             }

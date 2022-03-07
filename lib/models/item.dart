@@ -1,6 +1,7 @@
 class Item {
   final String name;
   final String userId;
+  final String userName;
   final DateTime time;
   final String imageUrl;
   final String feature_1;
@@ -12,6 +13,7 @@ class Item {
   Item({
     required this.name,
     required this.userId,
+    required this.userName,
     required this.time,
     required this.imageUrl,
     required this.feature_1,
@@ -25,6 +27,7 @@ class Item {
     return {
       "name": name,
       "userId": userId,
+      "userName": userName,
       "time": time,
       "imageUrl": imageUrl,
       "feature_1": feature_1,

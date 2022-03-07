@@ -61,6 +61,7 @@ class _CompleteSwapState extends State<CompleteSwap> {
                 Item item = Item(
                     name: data["name"],
                     userId: data["userId"],
+                    userName: data["userName"],
                     time: (data["time"] as Timestamp).toDate(),
                     imageUrl: data["imageUrl"],
                     feature_1: data["feature_1"],

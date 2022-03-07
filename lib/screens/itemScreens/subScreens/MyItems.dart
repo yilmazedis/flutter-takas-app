@@ -43,6 +43,7 @@ myItems() {
           Item item = Item(
               name: data["name"],
               userId: data["userId"],
+              userName: data["userName"],
               time: (data["time"] as Timestamp).toDate(),
               imageUrl: data["imageUrl"],
               feature_1: data["feature_1"],
@@ -108,7 +109,7 @@ myItems() {
                                     });
                               },
                             ),
-                            title: Text(item.name),
+                            title: Text(item.name, style: const TextStyle(fontSize: 25),),
                             subtitle: Text(
                               item.feature_1,
                               style:
@@ -118,9 +119,15 @@ myItems() {
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
-                              item.feature_2,
-                              style:
-                                  TextStyle(color: Colors.black.withOpacity(0.6)),
+                              "Yayın: " + item.feature_2,
+                              style: TextStyle(color: Colors.black.withOpacity(0.6), fontStyle: FontStyle.italic),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              item.feature_3 + " Sayfa",
+                              style: TextStyle(color: Colors.black.withOpacity(0.6), fontStyle: FontStyle.italic),
                             ),
                           ),
                           ButtonBar(

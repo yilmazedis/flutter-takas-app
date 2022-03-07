@@ -47,17 +47,31 @@ class _ItemCardState extends State<ItemCard> {
                         Icons.favorite,
                         color: Colors.red,
                       ),
-                      title: Text(widget.data.name),
+                      title: Text(widget.data.name, style: const TextStyle(fontSize: 25)),
                       subtitle: Text(
                         widget.data.feature_1,
                         style: TextStyle(color: Colors.black.withOpacity(0.6)),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.only(left: 16, top: 8),
                       child: Text(
-                        widget.data.feature_2,
-                        style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                        "Yayın: " + widget.data.feature_2,
+                        style: TextStyle(color: Colors.black.withOpacity(0.6), fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, top: 8),
+                      child: Text(
+                        widget.data.feature_3 + " Sayfa",
+                        style: TextStyle(color: Colors.black.withOpacity(0.6), fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, top: 12),
+                      child: Text(
+                        "Kitap sahibi: " + widget.data.userName,
+                        style: TextStyle(color: Colors.black.withOpacity(0.6), fontStyle: FontStyle.italic),
                       ),
                     ),
                     ButtonBar(

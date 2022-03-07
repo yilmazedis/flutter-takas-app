@@ -109,6 +109,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
           Auth().addItem({
             "name": itemName.text,
             "time": DateTime.now(),
+            "userName": Auth().me.name,
             "userId": Auth().currentUserId(),
             "imageUrl": url,
             "feature_1": itemFeature_1.text,
@@ -118,8 +119,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
             "sendRequest": ""
           });
         });
-
-        print("hello man!");
         Navigator.of(context).pop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
