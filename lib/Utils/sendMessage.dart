@@ -12,14 +12,6 @@ Widget sendMessageArea(BuildContext context, String toUserId, String name, image
     color: Colors.white,
     child: Row(
       children: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.photo),
-          iconSize: 25,
-          color: Theme.of(context).primaryColor,
-          onPressed: () {
-
-          },
-        ),
         Expanded(
           child: TextField(
             controller: messageText,

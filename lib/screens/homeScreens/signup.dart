@@ -25,7 +25,7 @@ class _SignupPageState extends State<SignupPage> {
   _imgFromGallery() async {
 
     var image = await ImagePicker().pickImage(
-        source: ImageSource.gallery, imageQuality: 0, maxHeight: 190);
+        source: ImageSource.gallery, maxHeight: 950);
     var f = await image?.readAsBytes();
 
     setState(() {

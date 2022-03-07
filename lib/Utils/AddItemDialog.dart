@@ -60,7 +60,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   }
 
   _imgFromGallery() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 0, maxHeight: 190);
+    var image = await ImagePicker().pickImage(source: ImageSource.gallery, maxHeight: 950);
 
     var f = await image?.readAsBytes();
 
