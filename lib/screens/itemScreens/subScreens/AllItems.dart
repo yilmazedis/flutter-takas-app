@@ -5,49 +5,101 @@ import 'package:flutter/material.dart';
 import 'package:takas_app/auth.dart';
 import 'package:takas_app/models/item.dart';
 
-import '../../../Utils/Constants.dart';
 import '../../../Utils/itemCard.dart';
 
-allItems() {
-  return StreamBuilder<QuerySnapshot>(
-    stream: FirebaseFirestore.instance.collection('items').where("userId", isNotEqualTo: Auth().currentUserId()).snapshots(),
-    builder:
-        (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+class allItems extends StatefulWidget {
+  const allItems({Key? key}) : super(key: key);
 
-      if (!snapshot.hasData) {
-        return Container();
-      }
+  @override
+  State<allItems> createState() => _allItemsState();
+}
 
-      if (snapshot.hasError) {
-        return Text('Something went wrong');
-      }
+class _allItemsState extends State<allItems> {
+  late var query;
+  @override
+  void initState() {
+    super.initState();
+    query = FirebaseFirestore.instance
+        .collection('items')
+        .where("userId", isNotEqualTo: Auth().currentUserId())
+        .snapshots();
+  }
 
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Text("Loading");
-      }
+  final _bookController = TextEditingController();
 
-      return ListView(
-        children: snapshot.data!.docs.map<Widget>((DocumentSnapshot document) {
-          Map<String, dynamic> data =
-          document.data()! as Map<String, dynamic>;
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: query,
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
 
+        if (snapshot.hasError) {
+          return Text('Something went wrong');
+        }
 
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text("Loading");
+        }
 
-          Item item = Item(
-              name: data["name"],
-              userId: data["userId"],
-              userName: data["userName"],
-              time: (data["time"] as Timestamp).toDate(),
-              imageUrl: data["imageUrl"],
-              feature_1: data["feature_1"],
-              feature_2: data["feature_2"],
-              feature_3: data["feature_3"],
-              getRequest: data["getRequest"],
-              sendRequest: data["sendRequest"]);
+        return ListView(
+          shrinkWrap: true,
+          children: [
+            Container(
+              height: 50,
+              width: 150,
+              child: TextFormField(
+                controller: _bookController,
+                decoration: InputDecoration(
+                  hintText: 'Aramak istediğiniz kitap adını giriniz.',
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.search),
+                    color: Colors.blue,
+                    onPressed: () async {
+                      setState(() {
+                        query = FirebaseFirestore.instance
+                            .collection('items')
+                            .where("name", isGreaterThanOrEqualTo: _bookController.text)
+                            .where("name", isLessThanOrEqualTo: "${_bookController.text}\uf7ff")
+                            .snapshots();
+                      });
+                    },
+                  ),
+                ),
+                onSaved: (String? value) {
+                  // This optional block of code can be used to run
+                  // code when the user saves the form.
+                },
+                validator: (String? value) {
+                  return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
+                },
+              ),
+            ),
+            ListView(
+              shrinkWrap: true,
+              children: snapshot.data!.docs.map<Widget>((DocumentSnapshot document) {
+                Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
-          return ItemCard(data: item, docId: document.id);
-        }).toList(),
-      );
-    },
-  );
+                Item item = Item(
+                    name: data["name"],
+                    userId: data["userId"],
+                    userName: data["userName"],
+                    time: (data["time"] as Timestamp).toDate(),
+                    imageUrl: data["imageUrl"],
+                    feature_1: data["feature_1"],
+                    feature_2: data["feature_2"],
+                    feature_3: data["feature_3"],
+                    getRequest: data["getRequest"],
+                    sendRequest: data["sendRequest"]);
+
+                return ItemCard(data: item, docId: document.id);
+              }).toList(),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
