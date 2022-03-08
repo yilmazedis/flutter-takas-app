@@ -26,19 +26,13 @@ class FirstScreen extends StatelessWidget {
                   const SizedBox(height: 20,),
                   Column(
                     children: [
-                      Text("Gebze Anadolu Lisesi Kitap Dönüşüm Uygulaması",
+                      Text("Kitap Takasla",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.grey[700],
                             fontSize: 15
                         ),),
-                      const SizedBox(width: 50),
-                      Text("Geliştirici Ahmet Recai Elcan",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.grey[700],
-                            fontSize: 15
-                        ),),
+
                     ],
                   ),
                 ],
