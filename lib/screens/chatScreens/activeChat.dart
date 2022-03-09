@@ -66,6 +66,7 @@ class _ActiveChatState extends State<ActiveChat> {
         }
 
         return ListView(
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           children: [
             SizedBox(

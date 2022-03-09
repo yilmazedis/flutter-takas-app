@@ -41,6 +41,7 @@ class _AllUsersState extends State<AllUsers> {
         }
 
         return ListView(
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           children: [
             SizedBox(

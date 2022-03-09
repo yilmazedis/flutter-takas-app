@@ -45,6 +45,7 @@ class _AllItemsState extends State<AllItems> {
         }
 
         return ListView(
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           children: [
             Container(
