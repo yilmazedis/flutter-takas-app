@@ -44,61 +44,64 @@ class _AllItemsState extends State<AllItems> {
           return Text("Loading");
         }
 
-        return ListView(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          children: [
-            Container(
-              height: 50,
-              width: 150,
-              child: TextFormField(
-                controller: _bookController,
-                decoration: InputDecoration(
-                  hintText: 'Aramak istediğiniz kitap adını giriniz.',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.search),
-                    color: Colors.blue,
-                    onPressed: () async {
-                      setState(() {
-                        query = FirebaseFirestore.instance
-                            .collection('items')
-                            .where("name", isGreaterThanOrEqualTo: _bookController.text)
-                            .where("name", isLessThanOrEqualTo: "${_bookController.text}\uf7ff")
-                            .snapshots();
-                      });
-                    },
+        return SingleChildScrollView(
+          child: ListView(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: [
+              Container(
+                height: 50,
+                width: 150,
+                child: TextFormField(
+                  controller: _bookController,
+                  decoration: InputDecoration(
+                    hintText: 'Aramak istediğiniz kitap adını giriniz.',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      color: Colors.blue,
+                      onPressed: () async {
+                        setState(() {
+                          query = FirebaseFirestore.instance
+                              .collection('items')
+                              .where("name", isGreaterThanOrEqualTo: _bookController.text)
+                              .where("name", isLessThanOrEqualTo: "${_bookController.text}\uf7ff")
+                              .snapshots();
+                        });
+                      },
+                    ),
                   ),
+                  onSaved: (String? value) {
+                    // This optional block of code can be used to run
+                    // code when the user saves the form.
+                  },
+                  validator: (String? value) {
+                    return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
+                  },
                 ),
-                onSaved: (String? value) {
-                  // This optional block of code can be used to run
-                  // code when the user saves the form.
-                },
-                validator: (String? value) {
-                  return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
-                },
               ),
-            ),
-            ListView(
-              shrinkWrap: true,
-              children: snapshot.data!.docs.map<Widget>((DocumentSnapshot document) {
-                Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+              ListView(
+                primary: false,
+                shrinkWrap: true,
+                children: snapshot.data!.docs.map<Widget>((DocumentSnapshot document) {
+                  Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
-                Item item = Item(
-                    name: data["name"],
-                    userId: data["userId"],
-                    userName: data["userName"],
-                    time: (data["time"] as Timestamp).toDate(),
-                    imageUrl: data["imageUrl"],
-                    feature_1: data["feature_1"],
-                    feature_2: data["feature_2"],
-                    feature_3: data["feature_3"],
-                    getRequest: data["getRequest"],
-                    sendRequest: data["sendRequest"]);
+                  Item item = Item(
+                      name: data["name"],
+                      userId: data["userId"],
+                      userName: data["userName"],
+                      time: (data["time"] as Timestamp).toDate(),
+                      imageUrl: data["imageUrl"],
+                      feature_1: data["feature_1"],
+                      feature_2: data["feature_2"],
+                      feature_3: data["feature_3"],
+                      getRequest: data["getRequest"],
+                      sendRequest: data["sendRequest"]);
 
-                return ItemCard(data: item, docId: document.id);
-              }).toList(),
-            ),
-          ],
+                  return ItemCard(data: item, docId: document.id);
+                }).toList(),
+              ),
+            ],
+          ),
         );
       },
     );

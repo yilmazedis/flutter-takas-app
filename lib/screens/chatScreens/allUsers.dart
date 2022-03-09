@@ -40,75 +40,78 @@ class _AllUsersState extends State<AllUsers> {
           return Text("yükleniyor");
         }
 
-        return ListView(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          children: [
-            SizedBox(
-              height: 50,
-              width: 150,
-              child: TextFormField(
-                controller: _bookController,
-                decoration: InputDecoration(
-                  hintText: 'Kullanıcı ara',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.search),
-                    color: Colors.blue,
-                    onPressed: () async {
-                      setState(() {
-                        query = FirebaseFirestore.instance
-                            .collection('users')
-                            .where("name",
-                                isGreaterThanOrEqualTo: _bookController.text)
-                            .where("name",
-                                isLessThanOrEqualTo:
-                                    "${_bookController.text}\uf7ff")
-                            .snapshots();
-                      });
-                    },
-                  ),
-                ),
-                onSaved: (String? value) {
-                  // This optional block of code can be used to run
-                  // code when the user saves the form.
-                },
-                validator: (String? value) {
-                  return (value != null && value.contains('@'))
-                      ? 'Do not use the @ char.'
-                      : null;
-                },
-              ),
-            ),
-            ListView(
-              shrinkWrap: true,
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
-
-                UserData userData = UserData(
-                    id: data["id"],
-                    name: data["name"],
-                    email: data["email"],
-                    imageUrl: data["imageUrl"],
-                    isOnline: data["isOnline"]);
-
-                return GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ChatScreen(
-                          id: userData.id,
-                          name: userData.name,
-                          isOnline: userData.isOnline,
-                          imageUrl: userData.imageUrl),
+        return SingleChildScrollView(
+          child: ListView(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: [
+              SizedBox(
+                height: 50,
+                width: 150,
+                child: TextFormField(
+                  controller: _bookController,
+                  decoration: InputDecoration(
+                    hintText: 'Kullanıcı ara',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      color: Colors.blue,
+                      onPressed: () async {
+                        setState(() {
+                          query = FirebaseFirestore.instance
+                              .collection('users')
+                              .where("name",
+                                  isGreaterThanOrEqualTo: _bookController.text)
+                              .where("name",
+                                  isLessThanOrEqualTo:
+                                      "${_bookController.text}\uf7ff")
+                              .snapshots();
+                        });
+                      },
                     ),
                   ),
-                  child:
-                      userList(userData.imageUrl, userData.name, "Merhaba de"),
-                );
-              }).toList(),
-            ),
-          ],
+                  onSaved: (String? value) {
+                    // This optional block of code can be used to run
+                    // code when the user saves the form.
+                  },
+                  validator: (String? value) {
+                    return (value != null && value.contains('@'))
+                        ? 'Do not use the @ char.'
+                        : null;
+                  },
+                ),
+              ),
+              ListView(
+                primary: false,
+                shrinkWrap: true,
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
+
+                  UserData userData = UserData(
+                      id: data["id"],
+                      name: data["name"],
+                      email: data["email"],
+                      imageUrl: data["imageUrl"],
+                      isOnline: data["isOnline"]);
+
+                  return GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ChatScreen(
+                            id: userData.id,
+                            name: userData.name,
+                            isOnline: userData.isOnline,
+                            imageUrl: userData.imageUrl),
+                      ),
+                    ),
+                    child:
+                        userList(userData.imageUrl, userData.name, "Merhaba de"),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
         );
       },
     );

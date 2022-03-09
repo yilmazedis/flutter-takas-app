@@ -47,7 +47,7 @@ class _ItemCardState extends State<ItemCard> {
                         Icons.favorite,
                         color: Colors.red,
                       ),
-                      title: Text(widget.data.name, style: const TextStyle(fontSize: 25)),
+                      title: Text(widget.data.name, style: const TextStyle(fontSize: 20)),
                       subtitle: Text(
                         widget.data.feature_1,
                         style: TextStyle(color: Colors.black.withOpacity(0.6)),

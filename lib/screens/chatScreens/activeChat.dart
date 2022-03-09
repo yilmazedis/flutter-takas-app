@@ -65,84 +65,87 @@ class _ActiveChatState extends State<ActiveChat> {
           );
         }
 
-        return ListView(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          children: [
-            SizedBox(
-              height: 50,
-              width: 150,
-              child: TextFormField(
-                controller: _bookController,
-                decoration: InputDecoration(
-                  hintText: 'Kullanıcı ara',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.search),
-                    color: Colors.blue,
-                    onPressed: () async {
-                      setState(() {
-                        query = FirebaseFirestore.instance
-                            .collection('users')
-                            .where("name",
-                                isGreaterThanOrEqualTo: _bookController.text)
-                            .where("name",
-                                isLessThanOrEqualTo:
-                                    "${_bookController.text}\uf7ff")
-                            .snapshots();
-                      });
-                    },
+        return SingleChildScrollView(
+          child: ListView(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: [
+              SizedBox(
+                height: 50,
+                width: 150,
+                child: TextFormField(
+                  controller: _bookController,
+                  decoration: InputDecoration(
+                    hintText: 'Kullanıcı ara',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      color: Colors.blue,
+                      onPressed: () async {
+                        setState(() {
+                          query = FirebaseFirestore.instance
+                              .collection('users')
+                              .where("name",
+                                  isGreaterThanOrEqualTo: _bookController.text)
+                              .where("name",
+                                  isLessThanOrEqualTo:
+                                      "${_bookController.text}\uf7ff")
+                              .snapshots();
+                        });
+                      },
+                    ),
                   ),
+                  onSaved: (String? value) {
+                    // This optional block of code can be used to run
+                    // code when the user saves the form.
+                  },
+                  validator: (String? value) {
+                    return (value != null && value.contains('@'))
+                        ? 'Do not use the @ char.'
+                        : null;
+                  },
                 ),
-                onSaved: (String? value) {
-                  // This optional block of code can be used to run
-                  // code when the user saves the form.
-                },
-                validator: (String? value) {
-                  return (value != null && value.contains('@'))
-                      ? 'Do not use the @ char.'
-                      : null;
-                },
               ),
-            ),
-            ListView(
-              shrinkWrap: true,
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
+              ListView(
+                primary: false,
+                shrinkWrap: true,
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
 
-                ChatMenu chatMenu = ChatMenu(
-                  name: data["name"],
-                  text: data["text"],
-                  time: (data['time'] as Timestamp).toDate(),
-                  imageUrl: data["imageUrl"],
-                  isOnline: data["isOnline"],
-                  isRead: data["isRead"],
-                );
+                  ChatMenu chatMenu = ChatMenu(
+                    name: data["name"],
+                    text: data["text"],
+                    time: (data['time'] as Timestamp).toDate(),
+                    imageUrl: data["imageUrl"],
+                    isOnline: data["isOnline"],
+                    isRead: data["isRead"],
+                  );
 
-                //var imagePath = data["imageUrl"];
+                  //var imagePath = data["imageUrl"];
 
-                //print("imagePath $imagePath");
-                //
-                DateTime dt = (data['time'] as Timestamp).toDate();
-                var d24 = DateFormat('dd/MM/yyyy, HH:mm').format(dt);
+                  //print("imagePath $imagePath");
+                  //
+                  DateTime dt = (data['time'] as Timestamp).toDate();
+                  var d24 = DateFormat('dd/MM/yyyy, HH:mm').format(dt);
 
-                return GestureDetector(
-                    onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ChatScreen(
-                              id: document.id,
-                              name: chatMenu.name,
-                              isOnline: chatMenu.isOnline,
-                              imageUrl: chatMenu.imageUrl,
+                  return GestureDetector(
+                      onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ChatScreen(
+                                id: document.id,
+                                name: chatMenu.name,
+                                isOnline: chatMenu.isOnline,
+                                imageUrl: chatMenu.imageUrl,
+                              ),
                             ),
                           ),
-                        ),
-                    child: conversation(chatMenu.imageUrl, chatMenu.name,
-                        chatMenu.text, d24, !chatMenu.isRead));
-              }).toList(),
-            ),
-          ],
+                      child: conversation(chatMenu.imageUrl, chatMenu.name,
+                          chatMenu.text, d24, !chatMenu.isRead));
+                }).toList(),
+              ),
+            ],
+          ),
         );
       },
     );
