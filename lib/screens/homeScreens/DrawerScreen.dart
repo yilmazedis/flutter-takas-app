@@ -88,7 +88,7 @@ class _DrawerScreenState extends State<DrawerScreen>
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: const Text('Çıkış Yapmak istiyor musunuz!'),
+                title: const Text('Çıkış Yapmak istiyor musunuz?'),
                 content: SingleChildScrollView(
                   child: Column(
                     children: [
@@ -187,7 +187,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      "Kitap Dönüşüm",
+                      "Kitap Takasla",
                       style: TextStyle(color: Colors.white, fontSize: 30),
                     ),
                     const SizedBox(
