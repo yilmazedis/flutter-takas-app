@@ -74,7 +74,7 @@ class _DrawerScreenState extends State<DrawerScreen>
 
   Widget myItemsStream = myItems();
   Widget allItemsStream = allItems();
-  Widget allUsersStream = allUsers();
+  Widget allUsersStream = AllUsers();
   Widget activeChatStream = activeChat();
 
   int selectedScreen = 0;

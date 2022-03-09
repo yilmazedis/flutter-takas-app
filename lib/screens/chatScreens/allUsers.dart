@@ -6,54 +6,117 @@ import 'package:takas_app/models/user.dart';
 import 'package:takas_app/screens/chatScreens/chat.dart';
 import '../../auth.dart';
 
-allUsers() {
-  return StreamBuilder<QuerySnapshot>(
-    stream: FirebaseFirestore.instance
-        .collection('users')
-        .where("id", isNotEqualTo: Auth().currentUserId())
-        .snapshots(),
-    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      if (snapshot.hasError) {
-        return Text('Something went wrong');
-      }
+class AllUsers extends StatefulWidget {
+  const AllUsers({Key? key}) : super(key: key);
 
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Text("yükleniyor");
-      }
-
-      return ListView(
-        children: snapshot.data!.docs.map((DocumentSnapshot document) {
-          Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-
-          UserData userData = UserData(
-              id: data["id"],
-              name: data["name"],
-              email: data["email"],
-              imageUrl: data["imageUrl"],
-              isOnline: data["isOnline"]);
-
-          return GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => ChatScreen(id: userData.id,
-                  name: userData.name,
-                  isOnline: userData.isOnline,
-                  imageUrl: userData.imageUrl),
-              ),
-            ),
-            child: userList(userData.imageUrl, userData.name, "Merhaba de"),
-          );
-        }).toList(),
-      );
-    },
-  );
+  @override
+  _AllUsersState createState() => _AllUsersState();
 }
 
-Widget userList(
-    String url, String name, String message) {
+class _AllUsersState extends State<AllUsers> {
+  late var query;
+
+  @override
+  void initState() {
+    super.initState();
+    query = FirebaseFirestore.instance
+        .collection('users')
+        .where("id", isNotEqualTo: Auth().currentUserId())
+        .snapshots();
+  }
+
+  final _bookController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: query,
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Something went wrong');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text("yükleniyor");
+        }
+
+        return ListView(
+          shrinkWrap: true,
+          children: [
+            SizedBox(
+              height: 50,
+              width: 150,
+              child: TextFormField(
+                controller: _bookController,
+                decoration: InputDecoration(
+                  hintText: 'Kullanıcı ara',
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.search),
+                    color: Colors.blue,
+                    onPressed: () async {
+                      setState(() {
+                        query = FirebaseFirestore.instance
+                            .collection('users')
+                            .where("name",
+                                isGreaterThanOrEqualTo: _bookController.text)
+                            .where("name",
+                                isLessThanOrEqualTo:
+                                    "${_bookController.text}\uf7ff")
+                            .snapshots();
+                      });
+                    },
+                  ),
+                ),
+                onSaved: (String? value) {
+                  // This optional block of code can be used to run
+                  // code when the user saves the form.
+                },
+                validator: (String? value) {
+                  return (value != null && value.contains('@'))
+                      ? 'Do not use the @ char.'
+                      : null;
+                },
+              ),
+            ),
+            ListView(
+              shrinkWrap: true,
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data =
+                    document.data()! as Map<String, dynamic>;
+
+                UserData userData = UserData(
+                    id: data["id"],
+                    name: data["name"],
+                    email: data["email"],
+                    imageUrl: data["imageUrl"],
+                    isOnline: data["isOnline"]);
+
+                return GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChatScreen(
+                          id: userData.id,
+                          name: userData.name,
+                          isOnline: userData.isOnline,
+                          imageUrl: userData.imageUrl),
+                    ),
+                  ),
+                  child:
+                      userList(userData.imageUrl, userData.name, "Merhaba de"),
+                );
+              }).toList(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+Widget userList(String url, String name, String message) {
   return Padding(
-    padding: const EdgeInsets.all(15.0),
+    padding: const EdgeInsets.all(5.0),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -81,7 +144,7 @@ Widget userList(
                 ],
               ),
               const SizedBox(
-                height: 5.0,
+                height: 2.0,
               ),
               Row(
                 children: [
