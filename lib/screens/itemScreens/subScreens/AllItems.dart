@@ -7,14 +7,14 @@ import 'package:takas_app/models/item.dart';
 
 import '../../../Utils/itemCard.dart';
 
-class allItems extends StatefulWidget {
-  const allItems({Key? key}) : super(key: key);
+class AllItems extends StatefulWidget {
+  const AllItems({Key? key}) : super(key: key);
 
   @override
-  State<allItems> createState() => _allItemsState();
+  State<AllItems> createState() => _AllItemsState();
 }
 
-class _allItemsState extends State<allItems> {
+class _AllItemsState extends State<AllItems> {
   late var query;
   @override
   void initState() {

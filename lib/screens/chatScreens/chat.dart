@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:takas_app/Utils/chatBubble.dart';
 import 'package:takas_app/Utils/sendMessage.dart';
 import 'package:takas_app/models/message.dart';
-import 'package:takas_app/models/user.dart';
 
 import '../../auth.dart';
 

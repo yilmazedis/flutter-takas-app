@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:takas_app/Utils/AddItemDialog.dart';
@@ -73,9 +72,9 @@ class _DrawerScreenState extends State<DrawerScreen>
   }
 
   Widget myItemsStream = myItems();
-  Widget allItemsStream = allItems();
-  Widget allUsersStream = AllUsers();
-  Widget activeChatStream = activeChat();
+  Widget allItemsStream = const AllItems();
+  Widget allUsersStream = const AllUsers();
+  Widget activeChatStream = const ActiveChat();
 
   int selectedScreen = 0;
   String menuName = "Kullanıcılar";
@@ -164,13 +163,7 @@ class _DrawerScreenState extends State<DrawerScreen>
                           });
                     },
                   )
-                : IconButton(
-                    icon: const Icon(Icons.search),
-                    color: Colors.white,
-                    onPressed: () {
-                      setState(() {});
-                    },
-                  )
+                : Container()
           ],
           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
