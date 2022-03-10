@@ -59,7 +59,7 @@ class _SwapItemState extends State<SwapItem> {
                   child: Column(
                     children: const <Widget>[
                       Text(
-                        "Ekli kitabınız, lütfen kitap ekleyiniz! ",
+                        "Ekli Kitabınız bulunmamaktadır, lütfen kitap ekleyiniz! ",
                         style: TextStyle(
                           color: Colors.red,
                           fontWeight: FontWeight.bold,
