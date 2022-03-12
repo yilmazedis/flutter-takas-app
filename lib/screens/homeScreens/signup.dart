@@ -159,7 +159,7 @@ class _SignupPageState extends State<SignupPage> {
                       fontWeight: FontWeight.bold
                   ),),
                   const SizedBox(height: 10,),
-                  Text("Hesap Açın, Bedava", style: TextStyle(
+                  Text("Ücretsiz Hemen, Hesap Açın", style: TextStyle(
                       fontSize: 15,
                       color: Colors.grey[700]
                   ),),

@@ -127,8 +127,8 @@ class _LoginPageState extends State<LoginPage> {
                      Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const <Widget>[
-                        Text("Hesabınız Yoksa mu?"),
-                        Text(" Kaydol", style: TextStyle(
+                        Text("Hesabınız Yok mu?"),
+                        Text(" Üzülmeyin hemen Kaydolun", style: TextStyle(
                           fontWeight: FontWeight.w600, fontSize: 18
                         ),),
                       ],
