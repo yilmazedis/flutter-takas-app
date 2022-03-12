@@ -80,7 +80,7 @@ Future<void> main() async {
   }
 
 
-  registerNotification();
+  //registerNotification();
 
 
   runApp(

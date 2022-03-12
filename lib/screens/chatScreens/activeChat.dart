@@ -44,26 +44,7 @@ class _ActiveChatState extends State<ActiveChat> {
           return Text("yükleniyor");
         }
 
-        if (snapshot.data!.docs.isEmpty) {
-          return Center(
-            child: Container(
-              margin: const EdgeInsets.only(top: 100),
-              child: Column(
-                children: const <Widget>[
-                  Text(
-                    "Aktif konuşma yok",
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
-                    ),
-                    // textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
+
 
         return SingleChildScrollView(
           child: ListView(
@@ -84,6 +65,8 @@ class _ActiveChatState extends State<ActiveChat> {
                         setState(() {
                           query = FirebaseFirestore.instance
                               .collection('users')
+                              .doc(Auth().currentUserId())
+                              .collection("chatMenu")
                               .where("name",
                                   isGreaterThanOrEqualTo: _bookController.text)
                               .where("name",
