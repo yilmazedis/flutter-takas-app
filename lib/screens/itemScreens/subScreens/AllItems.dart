@@ -63,8 +63,11 @@ class _AllItemsState extends State<AllItems> {
                         setState(() {
                           query = FirebaseFirestore.instance
                               .collection('items')
-                              .where("name", isGreaterThanOrEqualTo: _bookController.text)
-                              .where("name", isLessThanOrEqualTo: "${_bookController.text}\uf7ff")
+                              .where("name",
+                                  isGreaterThanOrEqualTo: _bookController.text)
+                              .where("name",
+                                  isLessThanOrEqualTo:
+                                      "${_bookController.text}\uf7ff")
                               .snapshots();
                         });
                       },
@@ -75,15 +78,19 @@ class _AllItemsState extends State<AllItems> {
                     // code when the user saves the form.
                   },
                   validator: (String? value) {
-                    return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
+                    return (value != null && value.contains('@'))
+                        ? 'Do not use the @ char.'
+                        : null;
                   },
                 ),
               ),
               ListView(
                 primary: false,
                 shrinkWrap: true,
-                children: snapshot.data!.docs.map<Widget>((DocumentSnapshot document) {
-                  Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                children: snapshot.data!.docs
+                    .map<Widget>((DocumentSnapshot document) {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
 
                   Item item = Item(
                       name: data["name"],
