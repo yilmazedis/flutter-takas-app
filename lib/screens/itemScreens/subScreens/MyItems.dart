@@ -119,7 +119,8 @@ myItems() {
                             subtitle: Text(
                               item.feature_1,
                               style: TextStyle(
-                                  color: Colors.black.withOpacity(0.6)),
+                                  color: Color.fromARGB(255, 14, 165, 202)
+                                      .withOpacity(0.6)),
                             ),
                           ),
                           Padding(
@@ -127,7 +128,8 @@ myItems() {
                             child: Text(
                               "Yayın: " + item.feature_2,
                               style: TextStyle(
-                                  color: Colors.black.withOpacity(0.6),
+                                  color: Color.fromARGB(255, 26, 165, 61)
+                                      .withOpacity(0.6),
                                   fontStyle: FontStyle.italic),
                             ),
                           ),
@@ -136,7 +138,8 @@ myItems() {
                             child: Text(
                               "Türü: " + item.feature_3,
                               style: TextStyle(
-                                  color: Colors.black.withOpacity(0.6),
+                                  color: Color.fromARGB(255, 26, 165, 61)
+                                      .withOpacity(0.6),
                                   fontStyle: FontStyle.italic),
                             ),
                           ),

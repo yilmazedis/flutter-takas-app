@@ -81,7 +81,8 @@ class _ItemCardState extends State<ItemCard> {
                       child: Text(
                         "Kitap sahibi: " + widget.data.userName,
                         style: TextStyle(
-                            color: Colors.black.withOpacity(0.6),
+                            color: Color.fromARGB(255, 201, 22, 22)
+                                .withOpacity(0.6),
                             fontStyle: FontStyle.italic),
                       ),
                     ),
