@@ -134,7 +134,7 @@ myItems() {
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
-                              item.feature_3 + " Tür",
+                              "Türü: " + item.feature_3,
                               style: TextStyle(
                                   color: Colors.black.withOpacity(0.6),
                                   fontStyle: FontStyle.italic),

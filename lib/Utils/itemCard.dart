@@ -61,7 +61,7 @@ class _ItemCardState extends State<ItemCard> {
                     Padding(
                       padding: const EdgeInsets.only(left: 16, top: 8),
                       child: Text(
-                        "Yayın: " + widget.data.feature_2,
+                        "Türü: " + widget.data.feature_3,
                         style: TextStyle(
                             color: Colors.black.withOpacity(0.6),
                             fontStyle: FontStyle.italic),
@@ -70,7 +70,7 @@ class _ItemCardState extends State<ItemCard> {
                     Padding(
                       padding: const EdgeInsets.only(left: 16, top: 8),
                       child: Text(
-                        widget.data.feature_3 + " Tür",
+                        "Yayını: " + widget.data.feature_2,
                         style: TextStyle(
                             color: Colors.black.withOpacity(0.6),
                             fontStyle: FontStyle.italic),

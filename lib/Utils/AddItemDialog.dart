@@ -31,7 +31,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   String itemFeatureMessage_1 = "Lütfen Bu Alanı Boş Bırakmayın";
   String itemFeatureMessage_2 = "Lütfen Bu Alanı Boş Bırakmayın";
   String itemFeatureMessage_3 = "Lütfen Bu Alanı Boş Bırakmayın";
-  String itemFeatureMessage_4 = "Lütfen Sayfa Saysını Ödeyin";
+  String itemFeatureMessage_4 = "Lütfen Bu Alanı Boş Bırakmayın";
 
   bool validateTextField() {
     setState(() {
