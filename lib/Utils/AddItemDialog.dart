@@ -15,6 +15,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final itemFeature_1 = TextEditingController();
   final itemFeature_2 = TextEditingController();
   final itemFeature_3 = TextEditingController();
+  final itemFeature_4 = TextEditingController();
 
   var webImage;
   var imageName;
@@ -24,11 +25,13 @@ class _AddItemDialogState extends State<AddItemDialog> {
   bool itemFeatureValidate_1 = false;
   bool itemFeatureValidate_2 = false;
   bool itemFeatureValidate_3 = false;
+  bool itemFeatureValidate_4 = false;
 
   String itemNameMessage = "Lütfen Bu Alanı Boş Bırakmayın";
   String itemFeatureMessage_1 = "Lütfen Bu Alanı Boş Bırakmayın";
   String itemFeatureMessage_2 = "Lütfen Bu Alanı Boş Bırakmayın";
   String itemFeatureMessage_3 = "Lütfen Bu Alanı Boş Bırakmayın";
+  String itemFeatureMessage_4 = "Lütfen Sayfa Saysını Ödeyin";
 
   bool validateTextField() {
     setState(() {
@@ -36,6 +39,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
       itemFeatureValidate_1 = itemFeature_1.text.isEmpty ? true : false;
       itemFeatureValidate_2 = itemFeature_2.text.isEmpty ? true : false;
       itemFeatureValidate_3 = itemFeature_3.text.isEmpty ? true : false;
+      itemFeatureValidate_4 = itemFeature_4.text.isEmpty ? true : false;
     });
 
     // return if anyone is set as true
@@ -43,7 +47,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
       itemNameValidate,
       itemFeatureValidate_1,
       itemFeatureValidate_2,
-      itemFeatureValidate_3
+      itemFeatureValidate_3,
+      itemFeatureValidate_4
     ]) {
       if (element) {
         return false;
@@ -55,12 +60,14 @@ class _AddItemDialogState extends State<AddItemDialog> {
       itemFeatureValidate_1 = false;
       itemFeatureValidate_2 = false;
       itemFeatureValidate_3 = false;
+      itemFeatureValidate_4 = false;
     });
     return true;
   }
 
   _imgFromGallery() async {
-    var image = await ImagePicker().pickImage(source: ImageSource.gallery, maxHeight: 950);
+    var image = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, maxHeight: 950);
 
     var f = await image?.readAsBytes();
 
@@ -115,6 +122,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
             "feature_1": itemFeature_1.text,
             "feature_2": itemFeature_2.text,
             "feature_3": itemFeature_3.text,
+            "feature_4": itemFeature_4.text,
             "getRequest": [],
             "sendRequest": ""
           });
@@ -142,10 +150,31 @@ class _AddItemDialogState extends State<AddItemDialog> {
       content: SingleChildScrollView(
         child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
           getAvatar(),
-          makeInput(label: "İsim", userController: itemName, validate: itemNameValidate, message: itemNameMessage),
-          makeInput(label: "Yazar", userController: itemFeature_1, validate: itemFeatureValidate_1, message: itemFeatureMessage_1),
-          makeInput(label: "Yayın", userController: itemFeature_2, validate: itemFeatureValidate_2, message: itemFeatureMessage_2),
-          makeInput(label: "Sayfa Sayısı", userController: itemFeature_3, validate: itemFeatureValidate_3, message: itemFeatureMessage_3),
+          makeInput(
+              label: "İsim",
+              userController: itemName,
+              validate: itemNameValidate,
+              message: itemNameMessage),
+          makeInput(
+              label: "Yazar",
+              userController: itemFeature_1,
+              validate: itemFeatureValidate_1,
+              message: itemFeatureMessage_1),
+          makeInput(
+              label: "Yayın",
+              userController: itemFeature_2,
+              validate: itemFeatureValidate_2,
+              message: itemFeatureMessage_2),
+          makeInput(
+              label: "Tür",
+              userController: itemFeature_3,
+              validate: itemFeatureValidate_3,
+              message: itemFeatureMessage_3),
+          makeInput(
+              label: "Sayfa Sayısı",
+              userController: itemFeature_4,
+              validate: itemFeatureValidate_4,
+              message: itemFeatureMessage_4),
           makeButton("Kitap Ekle", addFireBase),
         ]),
       ),

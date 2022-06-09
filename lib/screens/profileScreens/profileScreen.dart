@@ -15,15 +15,16 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       appBar: AppBar(
-          elevation: 8,
-          title: const Text(
-            "Profilim",
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),),
+        elevation: 8,
+        title: const Text(
+          "Profilim",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
@@ -44,8 +45,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           return ListView(
             padding: EdgeInsets.zero,
-            children: snapshot.data!.docs.map<Widget>((DocumentSnapshot document) {
-              Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+            children:
+                snapshot.data!.docs.map<Widget>((DocumentSnapshot document) {
+              Map<String, dynamic> data =
+                  document.data()! as Map<String, dynamic>;
 
               const double coverHeight = 400;
               const profileHeight = 144;
@@ -67,12 +70,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       Container(
                           margin: const EdgeInsets.only(bottom: bottom),
-                          child: buildCoverImage(coverHeight)
-                      ),
+                          child: buildCoverImage(coverHeight)),
                       Positioned(
                           top: top,
-                          child:
-                          buildProfileImage(userData.imageUrl, profileHeight)),
+                          child: buildProfileImage(
+                              userData.imageUrl, profileHeight)),
                     ],
                   ),
                   buildContent(userData.name, userData.email)
@@ -104,8 +106,6 @@ Widget buildContent(name, title) => Column(
         )
       ],
     );
-
-
 
 Widget buildCoverImage(double coverHeight) => Container(
       color: Colors.grey,

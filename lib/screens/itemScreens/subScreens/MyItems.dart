@@ -63,13 +63,16 @@ myItems() {
                       flex: 2,
                       child: ClipRRect(
                           child: _sizedContainer(CachedNetworkImage(
-                            imageUrl: item.imageUrl,
-                            fit: BoxFit.cover,
-                            height: 160,
-                            errorWidget: (context, url, error) => const Icon(Icons.error),
-                          ))),
+                        imageUrl: item.imageUrl,
+                        fit: BoxFit.cover,
+                        height: 160,
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ))),
                     ),
-                    const SizedBox(width: 12,),
+                    const SizedBox(
+                      width: 12,
+                    ),
                     Expanded(
                       flex: 3,
                       child: Column(
@@ -85,8 +88,7 @@ myItems() {
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(
-                                        title: const Text(
-                                            'Kitap Silme'),
+                                        title: const Text('Kitap Silme'),
                                         content: SingleChildScrollView(
                                           child: Column(
                                             children: [
@@ -95,7 +97,8 @@ myItems() {
                                                   Icons.delete,
                                                   color: Colors.red,
                                                 ),
-                                                title: Text("Kitabı gerçekten silmek istiyor musunuz?"),
+                                                title: Text(
+                                                    "Kitabı gerçekten silmek istiyor musunuz?"),
                                               ),
                                               const SizedBox(width: 8),
                                               makeButton("Sil", () {
@@ -109,25 +112,32 @@ myItems() {
                                     });
                               },
                             ),
-                            title: Text(item.name, style: const TextStyle(fontSize: 25),),
+                            title: Text(
+                              item.name,
+                              style: const TextStyle(fontSize: 25),
+                            ),
                             subtitle: Text(
                               item.feature_1,
-                              style:
-                                  TextStyle(color: Colors.black.withOpacity(0.6)),
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6)),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
                               "Yayın: " + item.feature_2,
-                              style: TextStyle(color: Colors.black.withOpacity(0.6), fontStyle: FontStyle.italic),
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6),
+                                  fontStyle: FontStyle.italic),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
-                              item.feature_3 + " Sayfa",
-                              style: TextStyle(color: Colors.black.withOpacity(0.6), fontStyle: FontStyle.italic),
+                              item.feature_3 + " Tür",
+                              style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6),
+                                  fontStyle: FontStyle.italic),
                             ),
                           ),
                           ButtonBar(
@@ -143,15 +153,17 @@ myItems() {
                                               context: context,
                                               builder: (context) {
                                                 return AlertDialog(
-                                                  title:
-                                                      const Text('İsteği bırak'),
-                                                  content: SingleChildScrollView(
+                                                  title: const Text(
+                                                      'İsteği bırak'),
+                                                  content:
+                                                      SingleChildScrollView(
                                                     child: Column(
                                                       children: [
                                                         ListTile(
                                                           leading: const Icon(
                                                               Icons.album),
-                                                          title: Text(value.name),
+                                                          title:
+                                                              Text(value.name),
                                                           subtitle: Text(
                                                             value.sendRequest,
                                                             style: TextStyle(
@@ -161,12 +173,14 @@ myItems() {
                                                                         0.6)),
                                                           ),
                                                         ),
-                                                        const SizedBox(width: 8),
+                                                        const SizedBox(
+                                                            width: 8),
                                                         makeButton("Bırak", () {
                                                           Auth().cancelSwapRequest(
                                                               document.id,
                                                               item.sendRequest);
-                                                          Navigator.pop(context);
+                                                          Navigator.pop(
+                                                              context);
                                                         }),
                                                       ],
                                                     ),
